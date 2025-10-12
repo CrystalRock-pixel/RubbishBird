@@ -30,7 +30,7 @@ public class MainCamara : MonoBehaviour
     {
         ControlRotation();
     }
-    void LateUpdate()
+    void FixedUpdate()
     {
         FolllowPlayer();
     }
@@ -39,7 +39,8 @@ public class MainCamara : MonoBehaviour
     {
         Vector3 desiredPosition = target.position + offset;
         // 使用 Lerp 函数进行平滑插值
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        float t=Time.deltaTime * smoothSpeed;
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, t);
         transform.position = smoothedPosition;
     }
 
