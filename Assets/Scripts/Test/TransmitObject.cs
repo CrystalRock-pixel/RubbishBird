@@ -6,6 +6,9 @@ public class TransmitObject : MonoBehaviour,IInteractive
 {
     private BoxCollider interacteCollider;
     public Transform transmitSpot;
+
+    Transform IInteractive.instance { get => this.transform; set { } }
+
     public void Interact()
     {
         Player player = Player.Instance;

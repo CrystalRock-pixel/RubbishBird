@@ -4,32 +4,55 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("移动参数")]
     public float horizontalInput;
     public float verticalInput;
     public float moveSpeed = 5f; // 移动速度
+    private float oriMoveSpeed = 5f;
 
-    public bool isMoving;
+    [Header("交互参数")]
+    public IInteractive currentInteractiveItem; // 当前正在交互的物品
+    public Transform item;
 
+    [Header("组件引用")]
     public Rigidbody rb;
-    public Transform cameraTransform; // 摄像机的 Transform
+    private Transform cameraTransform; // 摄像机的 Transform
+    public Animator animator;
+
+    [Header("状态机定义")]
+    private StateMachine stateMachine = new StateMachine();
+    public PlayerIdleState idleState;
+    public PlayerMoveState moveState;
+
+
 
     private static Player instance;
     public static Player Instance
     {
         get
         {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<Player>();
-            }
             return instance;
         }
     }
 
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = FindObjectOfType<Player>();
+        }
+
+        oriMoveSpeed = moveSpeed;   
+
+        rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
+        cameraTransform = MainCamara.Instance.transform;
+        idleState = new PlayerIdleState(stateMachine);
+        moveState = new PlayerMoveState(stateMachine);
+    }
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        cameraTransform = MainCamara.Instance.transform;
+        stateMachine.Initialize(idleState);
     }
 
     //void LateUpdate()
@@ -38,9 +61,25 @@ public class Player : MonoBehaviour
     //}
     private void Update()
     {
+        stateMachine.Update();
         horizontalInput = Input.GetAxis("Horizontal"); // X 轴方向输入
         verticalInput = Input.GetAxis("Vertical");   // Z 轴方向输入
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if(currentInteractiveItem != null)
+            {
+                // 如果已经拾取了物品，执行丢弃逻辑
+                PlaceItem();
+            }
+        }
+
         PlayerMove();
+    }
+
+    private void FixedUpdate()
+    {
+        stateMachine.FixedUpdate();
     }
 
     void PlayerMove()
@@ -51,28 +90,30 @@ public class Player : MonoBehaviour
         // 应用移动
         // 如果使用 Rigidbody:
         rb.velocity =new Vector3( moveDirection.x * moveSpeed,rb.velocity.y,moveDirection.z*moveSpeed);
-        if (horizontalInput != 0 || verticalInput != 0 )
+    }
+
+    public void PickUpItem(IInteractive item)   //捡东西
+    {
+        currentInteractiveItem = item;
+        if (currentInteractiveItem is DragItem)
         {
-           isMoving = true;
-        }
-        else if(rb.velocity.magnitude <= 0.1f)
-        {
-            isMoving = false;
+            DragItem dragItem = item.instance.GetComponent<DragItem>();
+            moveSpeed *= dragItem.speedScale;
         }
     }
 
-    //void FollowCamera()
-    //{
-    //    // 1. 获取从纸片人到摄像机的方向
-    //    Vector3 directionToCamera = cameraTransform.position - transform.position;
-
-    //    // 2. 忽略 Y 轴的差异 (保持纸片人“直立”)
-    //    directionToCamera.y = 0;
-
-    //    // 3. 计算旋转：面向这个方向
-    //    Quaternion targetRotation = Quaternion.LookRotation(directionToCamera);
-
-    //    // 4. 应用旋转
-    //    transform.rotation = targetRotation;
-    //}
+    public void PlaceItem()
+    {
+        if (currentInteractiveItem is PickedItem)
+        {
+            currentInteractiveItem.instance.GetComponent<PickedItem>().Placed();
+            currentInteractiveItem = null;
+        }
+        else if (currentInteractiveItem is DragItem)
+        {
+            currentInteractiveItem.instance.GetComponent<DragItem>().Placed();
+            moveSpeed = oriMoveSpeed;
+            currentInteractiveItem = null;
+        }
+    }
 }

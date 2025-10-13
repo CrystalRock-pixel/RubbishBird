@@ -7,6 +7,9 @@ public class TestBox : MonoBehaviour,IInteractive
 
     private BoxCollider interacteCollider;
     public Transform transmitSpot;
+
+    Transform IInteractive.instance { get => this.transform; set => throw new System.NotImplementedException(); }
+
     public void Interact()
     {
         Player player = Player.Instance;
