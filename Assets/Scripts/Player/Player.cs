@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public float horizontalInput;
+    public float verticalInput;
     public float moveSpeed = 5f; // 移动速度
+
+    public bool isMoving;
+
     public Rigidbody rb;
     public Transform cameraTransform; // 摄像机的 Transform
 
@@ -33,21 +38,27 @@ public class Player : MonoBehaviour
     //}
     private void Update()
     {
+        horizontalInput = Input.GetAxis("Horizontal"); // X 轴方向输入
+        verticalInput = Input.GetAxis("Vertical");   // Z 轴方向输入
         PlayerMove();
     }
 
     void PlayerMove()
     {
-        // 获取输入
-        float moveX = Input.GetAxis("Horizontal"); // X 轴方向输入
-        float moveZ = Input.GetAxis("Vertical");   // Z 轴方向输入
-
         // 计算移动方向向量
-        Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
+        Vector3 moveDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
 
         // 应用移动
         // 如果使用 Rigidbody:
-        rb.velocity = moveDirection * moveSpeed;
+        rb.velocity =new Vector3( moveDirection.x * moveSpeed,rb.velocity.y,moveDirection.z*moveSpeed);
+        if (horizontalInput != 0 || verticalInput != 0 )
+        {
+           isMoving = true;
+        }
+        else if(rb.velocity.magnitude <= 0.1f)
+        {
+            isMoving = false;
+        }
     }
 
     //void FollowCamera()
