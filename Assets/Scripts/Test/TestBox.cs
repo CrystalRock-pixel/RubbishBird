@@ -20,4 +20,9 @@ public class TestBox : MonoBehaviour,IInteractive
     {
 
     }
+
+    void IInteractive.InteractEnd()
+    {
+        throw new System.NotImplementedException();
+    }
 }

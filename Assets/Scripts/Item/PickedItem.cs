@@ -18,13 +18,9 @@ public class PickedItem : MonoBehaviour, IInteractive
     }
     public void Interact()
     {
-        if (player.currentInteractiveItem == null)
-        {
-            LosePhysic();
-            StartCoroutine(SetPlayerPickedItem());
-            transform.position = player.transform.GetChild(0).position;
-            transform.SetParent(player.transform.GetChild(0));
-        }
+        LosePhysic();
+        transform.position = player.transform.GetChild(0).position;
+        transform.SetParent(player.transform.GetChild(0));
     }
 
     void LosePhysic()
@@ -38,6 +34,12 @@ public class PickedItem : MonoBehaviour, IInteractive
             GetComponent<Rigidbody>().isKinematic = true;
         }
     }
+
+    void IInteractive.InteractEnd()
+    {
+        Placed();
+        player.OverInteractive();
+    }
     public void Placed()
     {
         if (transform.GetChild(0).GetComponent<Collider>() != null)
@@ -50,10 +52,5 @@ public class PickedItem : MonoBehaviour, IInteractive
         }
         transform.SetParent(null);
         transform.position = player.transform.position;
-    }
-    IEnumerator SetPlayerPickedItem()
-    {
-        yield return new WaitForEndOfFrame();
-        player.PickUpItem(this);
     }
 }

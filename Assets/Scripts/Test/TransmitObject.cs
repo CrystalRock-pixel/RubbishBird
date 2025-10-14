@@ -19,4 +19,9 @@ public class TransmitObject : MonoBehaviour,IInteractive
     {
         
     }
+
+    void IInteractive.InteractEnd()
+    {
+        throw new System.NotImplementedException();
+    }
 }

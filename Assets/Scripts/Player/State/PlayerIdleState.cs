@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerIdleState : StateBase
+public class PlayerIdleState : PlayerStateBase
 {
-    Player player => Player.Instance;
     public PlayerIdleState(StateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -30,6 +29,10 @@ public class PlayerIdleState : StateBase
         if(player.horizontalInput != 0 || player.verticalInput != 0)
         {
             StateMachine.ChangeState(player.moveState);
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            StateMachine.ChangeState(player.jumpState);
         }
     }
 }

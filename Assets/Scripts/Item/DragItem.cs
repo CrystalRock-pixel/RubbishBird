@@ -9,6 +9,8 @@ public class DragItem : MonoBehaviour, IInteractive
     [HideInInspector]
     public float speedScale = 1f;
 
+    private bool isInteracting = false;
+
     Player player;
     Rigidbody rb;
     Transform IInteractive.instance
@@ -22,26 +24,30 @@ public class DragItem : MonoBehaviour, IInteractive
         mass = 1f;
         player = Player.Instance;
         speedScale = 1 / (mass * 2);
+        isInteracting = false;
         rb = GetComponent<Rigidbody>();
     }
     public void Interact()
     {
         transform.SetParent(player.transform);
         rb.isKinematic = true;
-        StartCoroutine(SetPlayerPickedItem());
+        isInteracting = true;
         Debug.Log("ÍÏ×§£¡");
     }
 
+    void IInteractive.InteractEnd()
+    {
+        if (isInteracting)
+        {
+            Placed();
+            player.OverInteractive();
+            isInteracting = false;
+        }
+    }
     public void Placed()
     {
         transform.SetParent(null);
         rb.isKinematic=false;
         Debug.Log("ËÉ×ì£¡");
-    }
-
-    IEnumerator SetPlayerPickedItem()
-    {
-        yield return new WaitForEndOfFrame();
-        player.PickUpItem(this);
     }
 }

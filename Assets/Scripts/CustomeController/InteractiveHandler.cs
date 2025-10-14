@@ -9,6 +9,7 @@ public interface IInteractive
     // 当玩家按下 E 键时执行的实际逻辑
     Transform instance { get; set; }
     void Interact();
+    void InteractEnd();
 }
 public class InteractiveHandler:MonoBehaviour
 {
@@ -27,18 +28,12 @@ public class InteractiveHandler:MonoBehaviour
     }
     private void Update()
     {
-        if (this.GetComponent<IInteractive>() != null && Input.GetKeyDown(KeyCode.E)&&canInteracting)
-        {
-            this.GetComponent<IInteractive>().Interact();
-        }
     }
     private void OnTriggerStay(Collider other)
     {
         //Debug.Log(other.name);
         if (other.CompareTag(intercatObjectTag))
         {
-            canInteracting = true;
-
             if (outlineObject != null)
             {
                 outlineObject.SetActive(true);
@@ -50,8 +45,6 @@ public class InteractiveHandler:MonoBehaviour
     {
         if (other.CompareTag(intercatObjectTag))
         {
-            canInteracting = false;
-
             if (outlineObject != null)
             {
                 outlineObject.SetActive(false);

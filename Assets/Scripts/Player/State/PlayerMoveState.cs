@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMoveState : StateBase
+public class PlayerMoveState : PlayerStateBase
 {
-    Player player => Player.Instance;
-    protected override Animator animator => player.animator;
     public PlayerMoveState(StateMachine stateMachine) : base(stateMachine)
     {
     }
 
+    private float horizontalInput => player.horizontalInput;
+    private float verticalInput=> player.verticalInput;
+
+    private float moveSpeed => player.moveSpeed;
     public override void OnEnter()
     {
         base.OnEnter();
@@ -30,11 +32,24 @@ public class PlayerMoveState : StateBase
     public override void OnUpdate()
     {
         base.OnUpdate();
-        if(player.horizontalInput == 0 && player.verticalInput == 0 ||player.rb.velocity.magnitude<=0.1f)
+
+        // 计算移动方向向量
+        Vector3 moveDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
+
+        // 应用移动
+        rb.velocity = new Vector3(moveDirection.x * moveSpeed, rb.velocity.y, moveDirection.z * moveSpeed);
+
+        if (horizontalInput == 0 && verticalInput == 0 ||rb.velocity.magnitude<=0.1f)
         {
             StateMachine.ChangeState(player.idleState);
         }
-        animator.SetFloat("InputX", player.horizontalInput);
-        animator.SetFloat("InputZ", player.verticalInput);
+
+        if (Input.GetKeyDown(KeyCode.Space)&&isGrounded)
+        {
+           StateMachine.ChangeState(player.jumpState);
+        }
+
+        animator.SetFloat("InputX",horizontalInput);
+        animator.SetFloat("InputZ",verticalInput);
     }
 }

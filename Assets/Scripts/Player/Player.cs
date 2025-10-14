@@ -10,20 +10,29 @@ public class Player : MonoBehaviour
     public float moveSpeed = 5f; // 移动速度
     private float oriMoveSpeed = 5f;
 
+    [Header("跳跃参数")]
+    public float jumpForce = 5f; // 跳跃力度
+    public bool isGrounded => Physics.Raycast(transform.position + Vector3.down+Vector3.right*0.7f, Vector3.down, 0.7f)
+        || Physics.Raycast(transform.position + Vector3.down + Vector3.left*0.7f, Vector3.down, 0.7f);
+    //public bool isGrounded = true; // 是否在地面上
+    
     [Header("交互参数")]
     public IInteractive currentInteractiveItem; // 当前正在交互的物品
     public Transform item;
+    //private bool canInteracitve = false;//周围有可交互物体时置为true
+    private List<IInteractive> interactiveItems = new List<IInteractive>();//周围可交互物体列表
 
     [Header("组件引用")]
     public Rigidbody rb;
     private Transform cameraTransform; // 摄像机的 Transform
     public Animator animator;
+    public AudioSource audioSource;
 
     [Header("状态机定义")]
     private StateMachine stateMachine = new StateMachine();
     public PlayerIdleState idleState;
     public PlayerMoveState moveState;
-
+    public PlayerJumpState jumpState;
 
 
     private static Player instance;
@@ -41,24 +50,22 @@ public class Player : MonoBehaviour
         {
             instance = FindObjectOfType<Player>();
         }
-
         oriMoveSpeed = moveSpeed;   
 
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        audioSource=GetComponent<AudioSource>();
         cameraTransform = MainCamara.Instance.transform;
         idleState = new PlayerIdleState(stateMachine);
         moveState = new PlayerMoveState(stateMachine);
+        jumpState = new PlayerJumpState(stateMachine);
     }
     private void Start()
     {
+        //canInteracitve = false;
         stateMachine.Initialize(idleState);
     }
 
-    //void LateUpdate()
-    //{
-    //    FollowCamera();
-    //}
     private void Update()
     {
         stateMachine.Update();
@@ -67,53 +74,120 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if(currentInteractiveItem != null)
+            if (currentInteractiveItem != null)
             {
                 // 如果已经拾取了物品，执行丢弃逻辑
-                PlaceItem();
+                currentInteractiveItem.InteractEnd();
+            }
+            else if (currentInteractiveItem == null&&interactiveItems.Count>0)
+            {
+                IInteractive interactive = interactiveItems[0];
+                InteracitveWithItem(interactive);
             }
         }
 
-        PlayerMove();
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Chirp();
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Interactive"))
+        {
+            //canInteracitve = true;
+            IInteractive interactive = other.GetComponent<IInteractive>();
+            if (interactive != null&&!interactiveItems.Contains(interactive))
+            {
+                interactiveItems.Add(interactive);
+            }
+        }
+        //if(other.CompareTag("Ground"))
+        //{
+        //    isGrounded = true;
+        //}
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Interactive"))
+        {
+            //canInteracitve = false;
+            IInteractive interactive = other.GetComponent<IInteractive>();
+            if (interactive != null)
+            {
+                interactiveItems.Remove(interactive);
+            }
+        }
+        //if (other.CompareTag("Ground"))
+        //{
+        //    isGrounded = false;
+        //}
     }
 
     private void FixedUpdate()
     {
         stateMachine.FixedUpdate();
+
+        // 可视化射线
+        Color rayColor = isGrounded ? Color.green : Color.red; // 如果击中地面，显示绿色；否则显示红色
+
+        Debug.DrawRay(
+        transform.position + Vector3.down+Vector3.right*0.7f, Vector3.down * 0.7f,
+            rayColor
+        );
+        Debug.DrawRay(
+       transform.position + Vector3.down+Vector3.left*0.7f, Vector3.down * 0.7f,
+           rayColor
+       );
     }
 
-    void PlayerMove()
+    void InteracitveWithItem(IInteractive item)
     {
-        // 计算移动方向向量
-        Vector3 moveDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
-
-        // 应用移动
-        // 如果使用 Rigidbody:
-        rb.velocity =new Vector3( moveDirection.x * moveSpeed,rb.velocity.y,moveDirection.z*moveSpeed);
-    }
-
-    public void PickUpItem(IInteractive item)   //捡东西
-    {
+        item.Interact();
         currentInteractiveItem = item;
-        if (currentInteractiveItem is DragItem)
+        if (item is PickedItem)
         {
-            DragItem dragItem = item.instance.GetComponent<DragItem>();
-            moveSpeed *= dragItem.speedScale;
+            InteractiveWithPickedItem(item);
+        }
+        else if (item is DragItem)
+        {
+            InteracitveWithDragItem(item);
         }
     }
 
-    public void PlaceItem()
+    public void InteractiveWithPickedItem(IInteractive item)
     {
-        if (currentInteractiveItem is PickedItem)
-        {
-            currentInteractiveItem.instance.GetComponent<PickedItem>().Placed();
-            currentInteractiveItem = null;
-        }
-        else if (currentInteractiveItem is DragItem)
-        {
-            currentInteractiveItem.instance.GetComponent<DragItem>().Placed();
-            moveSpeed = oriMoveSpeed;
-            currentInteractiveItem = null;
-        }
+        animator.SetTrigger("PickUp");
+    }
+    public void InteracitveWithDragItem(IInteractive item)
+    {
+        DragItem dragItem = item.instance.GetComponent<DragItem>();
+        moveSpeed *= dragItem.speedScale;
+    }
+
+    public void OverInteractive()
+    {
+        currentInteractiveItem = null;
+        //canInteracitve = true;
+        moveSpeed = oriMoveSpeed;
+    }
+
+    public void Chirp()
+    {
+        audioSource.Play();
+        StartBoolAnimation("IsChirp", 0.5f);
+
+    }
+    private void StartBoolAnimation(string boolName, float duration)
+    {
+        animator.SetBool(boolName, true);
+        StartCoroutine(ResetBoolAfterDelay(boolName, duration));
+    }
+    IEnumerator ResetBoolAfterDelay(string boolName, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        animator.SetBool(boolName, false);
     }
 }
