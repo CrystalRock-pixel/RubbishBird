@@ -49,7 +49,7 @@ public class PlayerJumpState : PlayerStateBase
         rb.velocity = new Vector3(moveDirection.x * player.moveSpeed, rb.velocity.y, moveDirection.z * player.moveSpeed);
         animator.SetFloat("InputX", player.horizontalInput);
 
-        if (isGrounded&&rb.velocity.y<=0)
+        if (isGrounded&&rb.velocity.y<=0.1f)
         {
             StateMachine.ChangeState(player.idleState);
         }

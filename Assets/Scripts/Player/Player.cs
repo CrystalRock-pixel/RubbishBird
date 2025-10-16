@@ -134,11 +134,11 @@ public class Player : MonoBehaviour
         Color rayColor = isGrounded ? Color.green : Color.red; // 如果击中地面，显示绿色；否则显示红色
 
         Debug.DrawRay(
-        transform.position + Vector3.down+Vector3.right*0.7f, Vector3.down * 0.7f,
+        transform.position + Vector3.down+Vector3.right*0.7f-Vector3.forward*0.5f, Vector3.down * 0.7f,
             rayColor
         );
         Debug.DrawRay(
-       transform.position + Vector3.down+Vector3.left*0.7f, Vector3.down * 0.7f,
+       transform.position + Vector3.down+Vector3.left*0.7f - Vector3.forward * 0.5f, Vector3.down * 0.7f,
            rayColor
        );
     }
