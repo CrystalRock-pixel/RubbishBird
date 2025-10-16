@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,11 +33,21 @@ public class BaristaController : MonoBehaviour
     [Header("2D俯视角设置")]
     public float fixedXRotation = 30f;
 
+    // [翻转设置] 
+    [Header("翻转设置")]
+    public float turnDuration = 0.5f; // 翻转完成所需时间
+
     private NPCState currentState = NPCState.Wander;
     private Vector3 wanderTarget;
     private int routeIndex = 0;
     private float stateTimer = 0f;
     private bool isWaiting = false;
+
+    // [翻转状态变量]
+    private bool isTurning = false;
+    private float targetYRotation;
+    private float currentTurnTime = 0f;
+    private Quaternion startRotation; //记录开始翻转时的模型旋转状态
 
 
     //接口
@@ -52,6 +63,9 @@ public class BaristaController : MonoBehaviour
     void Start()
     {
         PickNewWanderTarget();
+        // 初始化朝向，假设默认是 0 度
+        transform.rotation = Quaternion.Euler(fixedXRotation, 0f, 0);
+        targetYRotation = 0f;
     }
 
     void Update()
@@ -232,21 +246,56 @@ public class BaristaController : MonoBehaviour
             return;
 
         Vector3 dir = toTarget.normalized;
-        Vector3 move = dir * speed * Time.deltaTime;
 
-        // 防止越界抖动  若本次移动会超出目标，则直接对齐
+        // 检查是否需要开始翻转
+        float newTargetRotation = targetYRotation;
+        if (dir.z > 0.01f) // 朝+Z方向移动
+        {
+            newTargetRotation = 180f;
+        }
+        else if (dir.z < -0.01f) // 朝-Z方向移动
+        {
+            newTargetRotation = 0f;
+        }
+        if (Mathf.Abs(newTargetRotation - targetYRotation) > 0.1f)
+        {
+            // 需要翻转，开始新翻转
+            isTurning = true;
+            targetYRotation = newTargetRotation;
+            currentTurnTime = 0f;
+            startRotation = transform.rotation;
+        }
+        if (isTurning)
+        {
+            currentTurnTime += Time.deltaTime;
+            float t = currentTurnTime / turnDuration;
+
+            
+            if (t >= 1f)
+            {
+                t = 1f;
+                isTurning = false;
+            }          
+            float smoothT = t * t * t * (t * (t * 6f - 15f) + 10f);
+            Quaternion localTargetRotation = Quaternion.Euler(0, targetYRotation, 0);
+            float startY = startRotation.eulerAngles.y;
+          
+            float targetY = targetYRotation;
+
+            Quaternion baseRotation = Quaternion.Euler(fixedXRotation, 0, 0);
+            Quaternion worldTargetRotation = baseRotation * localTargetRotation;
+
+            transform.rotation = Quaternion.Slerp(startRotation, worldTargetRotation, smoothT);
+
+            return;
+        }
+
+        Vector3 move = dir * speed * Time.deltaTime;
         if (move.magnitude > dist)
             move = toTarget;
 
         transform.position += move;
 
-        // 平滑旋转朝向
-        if (dir.sqrMagnitude > 0.001f)
-        {
-            Quaternion lookRot = Quaternion.LookRotation(-dir);
-            Quaternion fixedRot = Quaternion.Euler(fixedXRotation, lookRot.eulerAngles.y, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, fixedRot, 10f * Time.deltaTime);
-        }
     }
 
 
@@ -315,5 +364,4 @@ public class BaristaController : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + leftDir * chaseRange);
         Gizmos.DrawLine(transform.position, transform.position + rightDir * chaseRange);
     }
-
 }
