@@ -18,7 +18,7 @@ TagManager:
   - Player
   - Small Item
   - Big Item
-  - 
+  - NPC
   - 
   - 
   - 
@@ -48,4 +48,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 2416655475
+    locked: 0
+  - name: NPC
+    uniqueID: 3957312913
     locked: 0
