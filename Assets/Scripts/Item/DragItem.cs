@@ -27,12 +27,13 @@ public class DragItem : MonoBehaviour, IInteractive
         isInteracting = false;
         rb = GetComponent<Rigidbody>();
     }
-    public void Interact()
+    public bool Interact()
     {
         transform.SetParent(player.transform);
         rb.isKinematic = true;
         isInteracting = true;
         Debug.Log("ÍÏ×§£¡");
+        return true;
     }
 
     void IInteractive.InteractEnd()

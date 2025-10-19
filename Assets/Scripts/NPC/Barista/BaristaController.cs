@@ -8,7 +8,8 @@ public class BaristaController : MonoBehaviour
     {
         Wander,
         Chase,
-        Route
+        Route,
+        LoopRoute,
     }
 
     [Header("基础设置")]
@@ -19,6 +20,11 @@ public class BaristaController : MonoBehaviour
     public float chaseDuration = 3f;
     public float sightAngle = 45f;
     public LayerMask obstacleMask;
+
+    [Header("贴图设置")]
+    public Sprite front;
+    public Sprite back;
+    public Sprite Slippery;//滑倒
 
     [Header("特殊任务")]
     public bool specialCondition = false;// 触发特殊任务（如摔倒）
@@ -49,9 +55,14 @@ public class BaristaController : MonoBehaviour
         SwitchState(newState);
     }
 
+    private void Awake()
+    {
+    }
+
     void Start()
     {
         PickNewWanderTarget();
+        SetState(NPCState.LoopRoute);
     }
 
     void Update()
@@ -75,6 +86,20 @@ public class BaristaController : MonoBehaviour
             case NPCState.Route:
                 UpdateRoute();
                 break;
+            case NPCState.LoopRoute:
+                UpdateLoopRoute();
+                DetectPlayerFront();
+                break;
+        }
+        Vector3 forwardFlat = Vector3.ProjectOnPlane(-transform.forward, Vector3.up).normalized;
+        CardinalDirection direction = DirectionHelper.GetCardinalDirection(-forwardFlat);
+        if(direction == CardinalDirection.Forward)
+        {
+            GetComponent<SpriteRenderer>().sprite = front;
+        }
+        else if (direction == CardinalDirection.Back)
+        {
+            GetComponent<SpriteRenderer>().sprite = back;
         }
     }
 
@@ -206,7 +231,7 @@ public class BaristaController : MonoBehaviour
         MoveToTarget(target.position, routeSpeed, 0.15f);
 
         // 判断是否到达路线点
-        if (Vector3.Distance(transform.position, target.position) < 0.15f)
+        if (Vector3.Distance(transform.position, target.position) < 0.5f)
         {
             routeIndex++;
             if (routeIndex >= routePoints.Count)
@@ -214,6 +239,24 @@ public class BaristaController : MonoBehaviour
                 specialCondition = false;
                 routeIndex = 0;
                 SwitchState(NPCState.Wander);
+            }
+        }
+    }
+
+    void UpdateLoopRoute()
+    {
+        if (routePoints == null || routePoints.Count == 0) return;
+
+        Transform target = routePoints[routeIndex];
+        MoveToTarget(target.position, routeSpeed, 0.15f);
+
+        // 判断是否到达路线点
+        if (Vector3.Distance(transform.position, target.position) < 0.5f)
+        {
+            routeIndex++;
+            if (routeIndex >= routePoints.Count)
+            {
+                routeIndex = 0;
             }
         }
     }
@@ -316,4 +359,66 @@ public class BaristaController : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + rightDir * chaseRange);
     }
 
+    public enum CardinalDirection
+    {
+        Forward, // 通常对应 Z 轴正方向 (0度)
+        Right,   // 通常对应 X 轴正方向 (90度)
+        Back,    // 通常对应 Z 轴负方向 (180度)
+        Left     // 通常对应 X 轴负方向 (270度或-90度)
+    }
+    public static class DirectionHelper
+    {
+        /// <summary>
+        /// 判断向量在 XZ 平面上所朝向的四个主要方向之一。
+        /// </summary>
+        /// <param name="directionVector">输入的 Vector3 向量。</param>
+        /// <returns>四个主要方向之一（Forward, Right, Back, Left）。</returns>
+        public static CardinalDirection GetCardinalDirection(Vector3 directionVector)
+        {
+            // 1. 忽略 Y 轴分量
+            Vector3 flatVector = new Vector3(directionVector.x, 0f, directionVector.z);
+
+            // 如果向量太小，无法确定方向，则返回一个默认值（例如：Forward）
+            if (flatVector.sqrMagnitude < 0.001f)
+            {
+                return CardinalDirection.Forward;
+            }
+
+            // 将向量标准化，只保留方向信息
+            flatVector.Normalize();
+
+            // 2. 计算角度
+            // 使用 Vector3.SignedAngle 计算向量与世界坐标系 Z 轴正方向（Forward）之间的夹角。
+            // Unity 的 Z 轴正方向通常被认为是 0 度。
+            // X 轴正方向（Right）是 +90 度。
+            // Z 轴负方向（Back）是 +/-180 度。
+            // X 轴负方向（Left）是 -90 度。
+            // 注意：夹角范围是 -180 到 +180 度。
+            float angle = Vector3.SignedAngle(Vector3.forward, flatVector, Vector3.up);
+
+            // 3. 根据角度划分象限（每个象限 90 度）
+            // 划分规则：
+            // 45 度 到 135 度 -> Right (右)
+            // 135 度 到 180 度 或 -180 度 到 -135 度 -> Back (后)
+            // -135 度 到 -45 度 -> Left (左)
+            // -45 度 到 45 度 -> Forward (前)
+
+            if (angle >= -45f && angle < 45f)
+            {
+                return CardinalDirection.Forward;
+            }
+            else if (angle >= 45f && angle < 135f)
+            {
+                return CardinalDirection.Right;
+            }
+            else if (angle >= 135f || angle < -135f) // 135度到180度 和 -180度到-135度
+            {
+                return CardinalDirection.Back;
+            }
+            else // if (angle >= -135f && angle < -45f)
+            {
+                return CardinalDirection.Left;
+            }
+        }
+    }
 }

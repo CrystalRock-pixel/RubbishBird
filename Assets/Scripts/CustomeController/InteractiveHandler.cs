@@ -8,7 +8,7 @@ public interface IInteractive
 {
     // 当玩家按下 E 键时执行的实际逻辑
     Transform instance { get; set; }
-    void Interact();
+    bool Interact();//返回是否成功交互
     void InteractEnd();
 }
 public class InteractiveHandler:MonoBehaviour

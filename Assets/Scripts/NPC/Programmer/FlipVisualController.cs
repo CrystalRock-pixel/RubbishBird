@@ -125,7 +125,52 @@ public class FlipVisualController : MonoBehaviour
         isFlipping = false;
     }
 
+    public IEnumerator FlipThenChangeSprite(string spritePath)
+    {
+        if (isFlipping) yield break;
+        isFlipping = true;
 
+
+        float timer = 0f;
+        float half = flipDuration / 2f;
+
+        Quaternion startRot = visualRoot.localRotation;
+        Quaternion midRot = startRot * Quaternion.Euler(0, 90f, 0);
+        Quaternion endRot = startRot * Quaternion.Euler(0, 180f, 0);
+
+        // 前半：从正面到侧面
+        while (timer < half)
+        {
+            timer += Time.deltaTime;
+            float t = timer / half;
+            visualRoot.localRotation = Quaternion.Lerp(startRot, midRot, t);
+            yield return null;
+        }
+
+        // 翻到一半：切换Sprite
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sprite = Resources.Load<Sprite>(spritePath);
+        }
+
+        // 后半：从侧面回到正面
+        timer = 0f;
+        while (timer < half)
+        {
+            timer += Time.deltaTime;
+            float t = timer / half;
+            visualRoot.localRotation = Quaternion.Lerp(midRot, endRot, t);
+            yield return null;
+        }
+
+        // 复位旋转
+        visualRoot.localRotation = initialRotation;
+
+        // 稍等一下再恢复移动
+        yield return new WaitForSeconds(0.05f);
+
+        isFlipping = false;
+    }
     // 初始化时立即设置正确Sprite
 
     private void UpdateSpriteInstant(ProgrammerController.RouteType route)

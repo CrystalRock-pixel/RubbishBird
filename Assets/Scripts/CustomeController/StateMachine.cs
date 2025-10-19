@@ -28,8 +28,8 @@ public class StateBase
     /// </summary>
     public virtual void OnEnter()
     {
-        // 统一调试逻辑：方便追踪状态切换
-        Debug.Log($"[FSM] 进入状态: {this.GetType().Name}");
+        //// 统一调试逻辑：方便追踪状态切换
+        //Debug.Log($"[FSM] 进入状态: {this.GetType().Name}");
     }
 
     /// <summary>
@@ -47,8 +47,8 @@ public class StateBase
     /// </summary>
     public virtual void OnExit()
     {
-        // 统一调试逻辑
-        Debug.Log($"[FSM] 退出状态: {this.GetType().Name}");
+        //// 统一调试逻辑
+        //Debug.Log($"[FSM] 退出状态: {this.GetType().Name}");
     }
 }
 /// <summary>
@@ -56,7 +56,7 @@ public class StateBase
 /// </summary>
 public class StateMachine
 {
-    private StateBase _currentState;
+    public StateBase _currentState { get; private set; }
 
     public void Initialize(StateBase startingState)
     {

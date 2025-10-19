@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PickedItem : MonoBehaviour, IInteractive
 {
-    Player player = Player.Instance;
+    protected Player player = Player.Instance;
 
     Transform IInteractive.instance
     {
@@ -16,14 +16,15 @@ public class PickedItem : MonoBehaviour, IInteractive
     {
         player = Player.Instance;
     }
-    public void Interact()
+    public virtual bool Interact()
     {
         LosePhysic();
         transform.position = player.transform.GetChild(0).position;
         transform.SetParent(player.transform.GetChild(0));
+        return true;
     }
 
-    void LosePhysic()
+    protected virtual void LosePhysic()
     {
         if(transform.GetChild(0).GetComponent<Collider>() != null)   //第一个子物体是碰撞体
         {
@@ -35,12 +36,12 @@ public class PickedItem : MonoBehaviour, IInteractive
         }
     }
 
-    void IInteractive.InteractEnd()
+    public virtual void InteractEnd()
     {
         Placed();
         player.OverInteractive();
     }
-    public void Placed()
+    public virtual void Placed()
     {
         if (transform.GetChild(0).GetComponent<Collider>() != null)
         {

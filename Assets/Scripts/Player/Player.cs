@@ -9,18 +9,19 @@ public class Player : MonoBehaviour
     public float verticalInput;
     public float moveSpeed = 5f; // 移动速度
     private float oriMoveSpeed = 5f;
+    public Vector3 rebirthPos;
 
     [Header("跳跃参数")]
     public float jumpForce = 5f; // 跳跃力度
-    public bool isGrounded => Physics.Raycast(transform.position + Vector3.down+Vector3.right*0.7f, Vector3.down, 0.7f)
-        || Physics.Raycast(transform.position + Vector3.down + Vector3.left*0.7f, Vector3.down, 0.7f);
+    public bool isGrounded => Physics.Raycast(transform.position + Vector3.down*0.5f+Vector3.right*0.4f, Vector3.down, 0.7f)
+        || Physics.Raycast(transform.position + Vector3.down*0.5f + Vector3.left*0.4f, Vector3.down, 0.7f);
     //public bool isGrounded = true; // 是否在地面上
     
     [Header("交互参数")]
     public IInteractive currentInteractiveItem; // 当前正在交互的物品
     public Transform item;
-    //private bool canInteracitve = false;//周围有可交互物体时置为true
-    private List<IInteractive> interactiveItems = new List<IInteractive>();//周围可交互物体列表
+    public List<IInteractive> interactiveItems = new List<IInteractive>();//周围可交互物体列表
+    public GameObject interactiveObject;
 
     [Header("组件引用")]
     public Rigidbody rb;
@@ -68,21 +69,48 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        /////Debug
+
+        if (currentInteractiveItem != null)
+        {
+            interactiveObject = currentInteractiveItem.instance.gameObject;
+        }
+        ///Debug
         stateMachine.Update();
         horizontalInput = Input.GetAxis("Horizontal"); // X 轴方向输入
         verticalInput = Input.GetAxis("Vertical");   // Z 轴方向输入
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (currentInteractiveItem != null)
+            if (currentInteractiveItem != null&&interactiveItems.Count!=0)   //当玩家持有交互物体，同时交互列表有另一个物体时，检测两个交互物体之间是否有交互
             {
-                // 如果已经拾取了物品，执行丢弃逻辑
+                if (interactiveItems.Count == 1 && interactiveItems[0] == currentInteractiveItem)
+                {
+                    currentInteractiveItem.InteractEnd();
+                    OverInteractive();
+                    return;
+                }
+                else
+                {
+                    IInteractive interactive = interactiveItems[0];
+                    if (TryInteracitveWithItem(interactive))
+                    {
+                        OverInteractive();
+                    }
+                }
+            }
+            else if(currentInteractiveItem != null)   //如果只有一个交互物体，结束交互
+            {
                 currentInteractiveItem.InteractEnd();
+                OverInteractive();
             }
             else if (currentInteractiveItem == null&&interactiveItems.Count>0)
             {
                 IInteractive interactive = interactiveItems[0];
-                InteracitveWithItem(interactive);
+                if (!TryInteracitveWithItem(interactive))
+                {
+                    OverInteractive();
+                }          //如果交互失败，就停止交互
             }
         }
 
@@ -103,10 +131,6 @@ public class Player : MonoBehaviour
                 interactiveItems.Add(interactive);
             }
         }
-        //if(other.CompareTag("Ground"))
-        //{
-        //    isGrounded = true;
-        //}
     }
 
     private void OnTriggerExit(Collider other)
@@ -124,6 +148,10 @@ public class Player : MonoBehaviour
         //{
         //    isGrounded = false;
         //}
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
     }
 
     private void FixedUpdate()
@@ -145,7 +173,6 @@ public class Player : MonoBehaviour
 
     void InteracitveWithItem(IInteractive item)
     {
-        item.Interact();
         currentInteractiveItem = item;
         if (item is PickedItem)
         {
@@ -154,6 +181,18 @@ public class Player : MonoBehaviour
         else if (item is DragItem)
         {
             InteracitveWithDragItem(item);
+        }
+    }
+    bool TryInteracitveWithItem(IInteractive item)
+    {
+        if(item.Interact())
+        {
+            InteracitveWithItem(item);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -174,6 +213,10 @@ public class Player : MonoBehaviour
         moveSpeed = oriMoveSpeed;
     }
 
+    public IInteractive GetCurrentInteractiveItem()//
+    {
+        return currentInteractiveItem;
+    }
     public void Chirp()
     {
         audioSource.Play();
@@ -189,5 +232,19 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
         animator.SetBool(boolName, false);
+    }
+
+    //private void Die()
+    //{
+    //    transform.position = rebirthPos;
+    //}
+
+    // NPC 会调用这个方法来击退玩家
+    public void TakeHit(Vector3 hitDirection, float force)
+    {
+        // ... 在这里实现给玩家施加物理力的逻辑
+        // 例如：
+        // GetComponent<Rigidbody>().AddForce(hitDirection * force, ForceMode.Impulse);
+        stateMachine.ChangeState(new PlayerHitState(stateMachine, hitDirection, force));
     }
 }
