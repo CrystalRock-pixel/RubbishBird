@@ -5,7 +5,7 @@ using UnityEngine;
 public class PickedItem : MonoBehaviour, IInteractive
 {
     protected Player player = Player.Instance;
-
+    public bool Disposable { get; set; } = false;
     Transform IInteractive.instance
     {
         get { return this.transform; }

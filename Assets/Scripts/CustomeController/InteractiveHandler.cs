@@ -10,6 +10,8 @@ public interface IInteractive
     Transform instance { get; set; }
     bool Interact();//返回是否成功交互
     void InteractEnd();
+
+    bool Disposable { get;set; }  //是否一次性交互，一次性交互即一次交互便交互完成
 }
 public class InteractiveHandler:MonoBehaviour
 {

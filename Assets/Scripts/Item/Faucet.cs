@@ -9,6 +9,7 @@ public class Faucet :MonoBehaviour,IInteractive
     public Transform instance { get => this.transform; set => throw new System.NotImplementedException(); }
 
     public GameObject Pond;    //ˮ̶
+    public bool Disposable { get; set; } = true;
 
     private void Start()
     {

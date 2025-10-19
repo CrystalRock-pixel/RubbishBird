@@ -5,6 +5,7 @@ using UnityEngine;
 public class Coffeemachine : MonoBehaviour, IInteractive
 {
     public Transform instance { get => this.transform; set => throw new System.NotImplementedException(); }
+    public bool Disposable { get; set; } = true;
 
     Player player;
 
@@ -24,7 +25,16 @@ public class Coffeemachine : MonoBehaviour, IInteractive
                 //Debug.Log("制作咖啡中...");
                 DialogManager.Instance.ShowDialog("制作咖啡中...", transform.position, new Vector3(0, 2.5f, 0), this.transform);
                 Destroy(interacitveItem.instance.gameObject);
-                StartCoroutine(MakeCoffee());
+                StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/CoffeeCup")));
+                return true;
+            }
+            else if(interactiveItemName == "BadCoffeeBean")
+            {
+                player.OverInteractive();
+                //Debug.Log("制作咖啡中...");
+                DialogManager.Instance.ShowDialog("制..制.作...咖咖..咖啡中...", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                Destroy(interacitveItem.instance.gameObject);
+                StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/BadCoffeeCup")));
                 return true;
             }
             else if (interactiveItemName == "CelesteStrawberry")
@@ -32,6 +42,13 @@ public class Coffeemachine : MonoBehaviour, IInteractive
                 //Debug.Log("正宗塞莱斯特草莓应该集齐202颗，并用于制作草莓派");
                 DialogManager.Instance.ShowDialog("正宗塞莱斯特草莓应该集齐202颗  并用于制作草莓派", transform.position,new Vector3(0,2.5f,0),this.transform);
                 return false;
+            }
+            else if(interactiveItemName.Contains("BaristaToy"))
+            {
+                DialogManager.Instance.ShowDialog("材质解析中--------99% \n 成分解析中-------99% \n", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                Destroy(interacitveItem.instance.gameObject);
+                StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/DiamondPickaxe")));
+                return true;
             }
             else
             {
@@ -47,11 +64,10 @@ public class Coffeemachine : MonoBehaviour, IInteractive
             return false;
         }
     }
-
-    IEnumerator MakeCoffee()
+    IEnumerator MakeThing(GameObject prefab)
     {
         yield return new WaitForSeconds(5f);
-        GameObject gameObject = Instantiate(Resources.Load<GameObject>("Prefabs/Item/CoffeeCup"), transform.position, Quaternion.identity);
+        GameObject gameObject = Instantiate(prefab, transform.position, Quaternion.identity);
         gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 2f, -4f);
     }
 

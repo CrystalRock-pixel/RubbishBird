@@ -17,6 +17,24 @@ public class CoffeeNPCChaseState : CoffeeNPCStateBase
         //Debug.Log("½øÈë×·»÷×´Ì¬");
 
         _chaseTimer = Npc.maxChaseTime;
+
+        float value = Random.Range(0f, 1f);
+        if (value > 0.5f)
+        {
+            if (value <= 0.7f)
+            {
+                DialogManager.Instance.ShowDialog("ÄÄÀ´µÄ³ôÄñ", Npc.transform.position, new Vector3(0, 2.5f, 0), Npc.transform);
+            }
+            else if (value <= 0.9f)
+            {
+                DialogManager.Instance.ShowDialog("ÄãÍêµ°ÁË", Npc.transform.position, new Vector3(0, 2.5f, 0), Npc.transform);
+            }
+            else
+            {
+                DialogManager.Instance.ShowDialog("àËàË  À´ÁËà»", Npc.transform.position, new Vector3(0, 2.5f, 0), Npc.transform);
+            }
+        }
+
     }
 
     public override void OnUpdate()
@@ -27,6 +45,10 @@ public class CoffeeNPCChaseState : CoffeeNPCStateBase
         if (_chaseTimer <= 0)
         {
             //Debug.Log("×·»÷³¬Ê±£¬·ÅÆú×·»÷£¬ÇÐ»»»ØÑ²Âß×´Ì¬¡£");
+            if (Npc.playerTarget == null || Npc.IsPlayerInFieldOfView())
+            {
+                return;
+            }
             StateMachine.ChangeState(new CoffeeNPCPatrolState(StateMachine, Npc));
             return;
         }

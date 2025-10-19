@@ -13,6 +13,7 @@ public class DragItem : MonoBehaviour, IInteractive
 
     Player player;
     Rigidbody rb;
+    public bool Disposable { get; set; } = false;
     Transform IInteractive.instance
     {
         get { return this.transform; }

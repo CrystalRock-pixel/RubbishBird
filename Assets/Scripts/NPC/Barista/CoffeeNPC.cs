@@ -8,7 +8,7 @@ using UnityEngine;
 public class CoffeeNPC : MonoBehaviour
 {
     // 使用您的状态机模块
-    private StateMachine _stateMachine;
+    public StateMachine _stateMachine;
 
     [Header("1. Sprite 设置")]
     // 1. Sprite 渲染器和方向 Sprite
@@ -269,9 +269,15 @@ public class CoffeeNPC : MonoBehaviour
         }
     }
 
+    public void ReachToBirdCall()
+    {
+        transform.LookAt(playerTarget);
+        _stateMachine.ChangeState(new CoffeeNPCChaseState(_stateMachine, this));
+    }
+
 #if UNITY_EDITOR
 
-        // ---------------------- 可视化 Gizmos ----------------------
+    // ---------------------- 可视化 Gizmos ----------------------
 
     private void OnDrawGizmosSelected()
     {

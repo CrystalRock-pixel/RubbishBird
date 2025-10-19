@@ -23,6 +23,10 @@ public class Player : MonoBehaviour
     public List<IInteractive> interactiveItems = new List<IInteractive>();//周围可交互物体列表
     public GameObject interactiveObject;
 
+    [Header("鸣叫交互")]
+    public float callRange = 10f; // 鸣叫范围半径
+    public LayerMask reactiveLayer; // 确保只检测能做出反应的对象层级
+
     [Header("组件引用")]
     public Rigidbody rb;
     private Transform cameraTransform; // 摄像机的 Transform
@@ -75,6 +79,10 @@ public class Player : MonoBehaviour
         {
             interactiveObject = currentInteractiveItem.instance.gameObject;
         }
+        else
+        {
+            interactiveObject = null;
+        }
         ///Debug
         stateMachine.Update();
         horizontalInput = Input.GetAxis("Horizontal"); // X 轴方向输入
@@ -116,7 +124,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Chirp();
+            MakeCall();
         }
     }
 
@@ -177,17 +185,21 @@ public class Player : MonoBehaviour
         if (item is PickedItem)
         {
             InteractiveWithPickedItem(item);
+            interactiveItems.Remove(item);
         }
         else if (item is DragItem)
         {
             InteracitveWithDragItem(item);
         }
     }
-    bool TryInteracitveWithItem(IInteractive item)
+    public bool TryInteracitveWithItem(IInteractive item)
     {
         if(item.Interact())
         {
-            InteracitveWithItem(item);
+            if (!item.Disposable)
+            {
+                InteracitveWithItem(item);
+            }
             return true;
         }
         else
@@ -246,5 +258,32 @@ public class Player : MonoBehaviour
         // 例如：
         // GetComponent<Rigidbody>().AddForce(hitDirection * force, ForceMode.Impulse);
         stateMachine.ChangeState(new PlayerHitState(stateMachine, hitDirection, force));
+    }
+
+
+    // 鸣叫方法
+    public void MakeCall()
+    {
+        // 播放鸣叫音效/动画...
+        Chirp();
+        // 获取范围内的所有碰撞体
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, callRange, reactiveLayer);
+
+        foreach (var hitCollider in hitColliders)
+        {
+            // 尝试获取反应脚本
+            ReactToCall reactor = hitCollider.GetComponent<ReactToCall>();
+            if (reactor != null)
+            {
+                reactor.React();
+            }
+        }
+    }
+
+    // 可视化范围（仅在编辑器中）
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, callRange);
     }
 }

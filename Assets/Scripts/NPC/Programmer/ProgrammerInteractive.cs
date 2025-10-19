@@ -6,6 +6,7 @@ public class ProgrammerInteractive : MonoBehaviour, IInteractive
 {
     public Transform instance { get => this.transform; set => throw new System.NotImplementedException(); }
 
+    public bool Disposable { get; set; } = true;
     Player player;
     ProgrammerController controller;
     FlipVisualController flipVisualController;
@@ -19,30 +20,30 @@ public class ProgrammerInteractive : MonoBehaviour, IInteractive
     }
     public bool Interact()
     {
-        IInteractive interactive = player.GetCurrentInteractiveItem();
-        if (interactive != null)
-        {
-            if (interactive.instance.name == "CoffeeCup(Clone)")
-            {
-                player.OverInteractive();
-                //Debug.Log("哦！谢谢你的咖啡");
-                DialogManager.Instance.ShowDialog("哪来的咖啡", transform.position, dialogOffset, this.transform);
-                Destroy(interactive.instance.gameObject);
-                StartCoroutine(DrinkCoffeeAndThenGoToToilet());
-                return true;
-            }
-            else if (interactive.instance.name == "CoffeeBean")
-            {
-                DialogManager.Instance.ShowDialog("我不是蘑菇=(", transform.position, dialogOffset, this.transform);
-            }
-            else if(interactive.instance.name == "CelesteStrawberry")
-            {
-                DialogManager.Instance.ShowDialog("这只有一个草莓  不够加一条命", transform.position, dialogOffset, this.transform);
-            }
-            return false;
-        }
-        else
-        {
+        //IInteractive interactive = player.GetCurrentInteractiveItem();
+        //if (interactive != null)
+        //{
+        //    if (interactive.instance.name == "CoffeeCup(Clone)")
+        //    {
+        //        player.OverInteractive();
+        //        //Debug.Log("哦！谢谢你的咖啡");
+        //        DialogManager.Instance.ShowDialog("哪来的咖啡", transform.position, dialogOffset, this.transform);
+        //        Destroy(interactive.instance.gameObject);
+        //        StartCoroutine(DrinkCoffeeAndThenGoToToilet());
+        //        return true;
+        //    }
+        //    else if (interactive.instance.name == "CoffeeBean")
+        //    {
+        //        DialogManager.Instance.ShowDialog("我不是蘑菇=(", transform.position, dialogOffset, this.transform);
+        //    }
+        //    else if(interactive.instance.name == "CelesteStrawberry")
+        //    {
+        //        DialogManager.Instance.ShowDialog("这只有一个草莓  不够加一条命", transform.position, dialogOffset, this.transform);
+        //    }
+        //    return false;
+        //}
+        //else
+        //{
             float value=Random.Range(0f, 1f);
             if (value < 0.5f)
             {
@@ -61,10 +62,10 @@ public class ProgrammerInteractive : MonoBehaviour, IInteractive
                 DialogManager.Instance.ShowDialog("超级黑客 不是超级嗨客", transform.position, dialogOffset, this.transform);
             }
             return false;
-        }
+        //}
     }
 
-    IEnumerator DrinkCoffeeAndThenGoToToilet()
+    public IEnumerator DrinkCoffeeAndThenGoToToilet()
     {
         StartCoroutine(flipVisualController.FlipThenChangeSprite("Animation/NPC_Programmer/State/DrinkCoffee"));
         yield return new WaitForSeconds(10f);
@@ -74,7 +75,7 @@ public class ProgrammerInteractive : MonoBehaviour, IInteractive
 
     public IEnumerator ComputerBoom()
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(5f);
         //StartCoroutine(flipVisualController.FlipThenChangeSprite("Animation/NPC_Programmer/State/ComputerBroken"));
         Destroy(computer);
         DialogManager.Instance.ShowDialog("靠！我刚写的程序！！！！！！！！", transform.position, dialogOffset, this.transform);

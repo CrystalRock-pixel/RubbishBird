@@ -8,6 +8,7 @@ public class Computer : MonoBehaviour, IInteractive
 
     Player player=Player.Instance;
     public ProgrammerInteractive programmerInteractive;
+    public bool Disposable { get; set; } = true;
 
     private void Start()
     {
