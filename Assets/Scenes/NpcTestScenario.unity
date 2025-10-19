@@ -36890,7 +36890,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
-<<<<<<< HEAD
 --- !u!1 &563506967
 GameObject:
   m_ObjectHideFlags: 0
@@ -36922,7 +36921,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1429434262}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-=======
 --- !u!1001 &538277685
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37006,7 +37004,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4dac5831de460cd478d5994a41d33f14, type: 3}
->>>>>>> e21b591b3c50d1c03a77b0daa5523219ba8fa960
 --- !u!1 &605819872
 GameObject:
   m_ObjectHideFlags: 0
@@ -37800,7 +37797,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
-<<<<<<< HEAD
 --- !u!114 &1243646505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38092,14 +38088,12 @@ Transform:
   - {fileID: 1024089576}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-=======
 --- !u!4 &1435452000 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4dac5831de460cd478d5994a41d33f14,
     type: 3}
   m_PrefabInstance: {fileID: 538277685}
   m_PrefabAsset: {fileID: 0}
->>>>>>> e21b591b3c50d1c03a77b0daa5523219ba8fa960
 --- !u!1 &1742774034
 GameObject:
   m_ObjectHideFlags: 0
@@ -38554,8 +38548,5 @@ SceneRoots:
   - {fileID: 84135373}
   - {fileID: 1936523067}
   - {fileID: 239321299}
-<<<<<<< HEAD
   - {fileID: 1429434262}
-=======
   - {fileID: 1926852852}
->>>>>>> e21b591b3c50d1c03a77b0daa5523219ba8fa960
