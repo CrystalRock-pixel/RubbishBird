@@ -40,6 +40,12 @@ public class CoffeeNPC : MonoBehaviour
     public float stunDuration = 3f; // 眩晕时长（秒）
     public float playerKickForce = 10f; // 施加给玩家的瞬时击退力
 
+    [Header("5. 行走动画摆动设置")]
+    public float swaySpeed = 10f; // 摆动的频率（越快摆动越快）
+    public float swayAngle = 5f; // 摆动的最大角度（度）
+                                 // 私有计时器，用于驱动正弦波
+    private float _swayTimer = 0f;
+
     public bool disableVisuals=false;
     public GameObject CoffeeToyPrefab;
 
@@ -79,6 +85,7 @@ public class CoffeeNPC : MonoBehaviour
         if (!disableVisuals)
         {
             UpdateVisuals();
+            HandleSpriteSway();
         }
 
         // 调试：如果玩家在视野内，切换到追击状态
@@ -118,18 +125,19 @@ public class CoffeeNPC : MonoBehaviour
         {
             spriteRenderer.sprite = SpriteForward; // 正前 (Z+)
         }
-        //else if (angle >= 45 && angle < 135)
-        //{
-        //    spriteRenderer.sprite = SpriteRight; // 正右 (X+)
-        //}
-        //else if (angle >= -135 && angle < -45)
-        //{
-        //    spriteRenderer.sprite = SpriteLeft; // 正左 (X-)
-        //}
+        else if (angle >= 45 && angle < 135)
+        {
+            spriteRenderer.sprite = SpriteRight; // 正右 (X+)
+        }
+        else if (angle >= -135 && angle < -45)
+        {
+            spriteRenderer.sprite = SpriteLeft; // 正左 (X-)
+        }
         else
         {
             spriteRenderer.sprite = SpriteBackward; // 正后 (Z-)
         }
+        spriteRenderer.transform.rotation = Quaternion.identity; // 保持 Sprite 不旋转
     }
 
     /// <summary>
@@ -215,9 +223,55 @@ public class CoffeeNPC : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    private void HandleSpriteSway()
+    {
+        // 只有在 NPC 移动时才进行摆动（通过检查 MovementDirection）
+        // 为了简单，我们只检查速度是否大于一个很小的值
+        bool isMoving = CurrentMovementDirection.sqrMagnitude > 0.01f;
+
+        if (spriteRenderer == null) return;
+
+        // 找到 SpriteRenderer 所在的 Transform，即子物体
+        Transform spriteTransform = spriteRenderer.transform;
+
+        if (isMoving)
+        {
+            // 1. 累加时间（注意：这里使用 Time.time 或累加 Time.deltaTime 都可以，累加更可控）
+            // 累加时间，乘以行走速度，可以使跑得越快摆动越快（可选）
+            // 简单起见，我们只使用 deltaTime 和 swaySpeed
+            _swayTimer += Time.deltaTime * swaySpeed;
+
+            // 2. 使用正弦函数计算当前摆动角度
+            // Mathf.Sin 的范围是 [-1, 1]，乘以 swayAngle 得到最终角度
+            float angle = Mathf.Sin(_swayTimer) * swayAngle;
+
+            // 3. 将角度应用到 SpriteTransform 的局部 Z 轴旋转（假设 Sprite 是面向 Z 轴的）
+            // 如果您的 Sprite 面向 Y 轴（2D），可能需要旋转 Z 或 X 轴。对于 3D 世界中的 Z/X 摆动，我们通常旋转 Y 轴或 Z 轴（取决于您的 Sprite 配置）。
+            // 如果您的 SpriteRenderer 在世界坐标系下是面向 Z 轴的，那么左右摇摆通常是绕局部 Z 轴（如果它是面向相机的）或局部 Y 轴（如果它始终面向世界坐标 Z）。
+
+            // 由于我们希望 Sprite 保持直立，但绕 Y 轴（垂直轴）左右扭动
+            // 绕 Y 轴的左右摆动是最佳选择
+            spriteTransform.localRotation = spriteTransform.localRotation* Quaternion.Euler(0f, 0f, angle);
+        }
+        else
+        {
+            // NPC 停止时，平滑地将摆动旋转恢复到零
+            if (spriteTransform.localRotation != Quaternion.identity)
+            {
+                spriteTransform.localRotation = Quaternion.Lerp(
+                    spriteTransform.localRotation,
+                    Quaternion.identity,
+                    Time.deltaTime * 5f // 恢复速度
+                );
+                // 重置计时器，使下次开始行走时从零开始摆动
+                _swayTimer = 0f;
+            }
+        }
+    }
+
 #if UNITY_EDITOR
 
-    // ---------------------- 可视化 Gizmos ----------------------
+        // ---------------------- 可视化 Gizmos ----------------------
 
     private void OnDrawGizmosSelected()
     {

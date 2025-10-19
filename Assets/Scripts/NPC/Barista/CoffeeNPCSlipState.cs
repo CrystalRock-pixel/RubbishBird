@@ -12,6 +12,7 @@ public class CoffeeNPCSlipState : CoffeeNPCStateBase
     private float lifeTimer = 3f;  //时间到了变成掉落物
 
     private Quaternion targetRotation;
+    private Transform spriteTransform;
     private float rotationSpeed = 120f;
     private bool isRotating;
 
@@ -22,9 +23,11 @@ public class CoffeeNPCSlipState : CoffeeNPCStateBase
         SpriteRenderer spriteRenderer = Npc.spriteRenderer;
         spriteRenderer.sprite = Npc.SpriteSlip;
 
-        Npc.transform.rotation = Quaternion.identity;
+        //Npc.transform.rotation = Quaternion.identity;
+        spriteTransform = Npc.spriteRenderer.transform;
+        spriteTransform.rotation = Quaternion.identity;
         Npc.disableVisuals = true;
-        targetRotation = Npc.transform.rotation * Quaternion.Euler(0, 0, -90f);
+        targetRotation = spriteTransform.rotation * Quaternion.Euler(0, 0, -90f);
         isRotating = true;
     }
 
@@ -49,18 +52,18 @@ public class CoffeeNPCSlipState : CoffeeNPCStateBase
             // 它会以恒定的角速度朝目标旋转
             if (isRotating)
             {
-                Npc.transform.rotation = Quaternion.RotateTowards(
-                    Npc.transform.rotation,
+                spriteTransform.rotation = Quaternion.RotateTowards(
+                    spriteTransform.rotation,
                     targetRotation,
                     rotationSpeed * Time.deltaTime
                 );
             }
 
             // 检查是否接近目标旋转
-            if (Quaternion.Angle(Npc.transform.rotation, targetRotation) < 0.01f)
+            if (Quaternion.Angle(spriteTransform.rotation, targetRotation) < 0.01f)
             {
                 // 确保最终精确到达目标
-                Npc.transform.rotation = targetRotation;
+                spriteTransform.rotation = targetRotation;
                 isRotating = false;
                 Debug.Log("Rotation complete.");
             }
