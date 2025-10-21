@@ -12,7 +12,7 @@ public class PickedItem : MonoBehaviour, IInteractive
         set { }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         player = Player.Instance;
     }

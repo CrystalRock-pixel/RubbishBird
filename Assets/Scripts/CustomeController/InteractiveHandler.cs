@@ -12,6 +12,10 @@ public interface IInteractive
     void InteractEnd();
 
     bool Disposable { get;set; }  //是否一次性交互，一次性交互即一次交互便交互完成
+    int Weight
+    {
+        get => 1;
+    }
 }
 public class InteractiveHandler:MonoBehaviour
 {

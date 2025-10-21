@@ -13,7 +13,7 @@ public class BaristaToy : PickedItem
     public float bobbingSpeed = 2.0f;     // 上下浮动的速度（频率），例如 2.0
     bool isPickedUp = false;
 
-    private void Start()
+    private new void Start()
     {
         // 记录初始位置
         initialPosition = transform.position;
