@@ -32,7 +32,6 @@ public class SeesawController : MonoBehaviour
 
     private Coroutine tiltCoroutine;
     private Quaternion initialRotation;
-    private int firstPlacedSide;
 
     // ======================== Unity 生命周期 ========================
     void Start()
@@ -51,6 +50,8 @@ public class SeesawController : MonoBehaviour
     /// <param name="isLeft">是否放置在左侧。</param>
     public bool PlaceItem(GameObject itemInstance, bool isLeft)
     {
+        // 标记新放置物品所在的边
+        bool isNewItemLeft = isLeft;
         // 1. 检查该端是否已满
         if (isLeft)
         {
@@ -62,8 +63,6 @@ public class SeesawController : MonoBehaviour
             itemInstance.transform.SetParent(leftPlacementPoint);
             itemInstance.transform.localPosition = Vector3.zero;
             //itemInstance.transform.localRotation = Quaternion.identity;
-
-            if (firstPlacedSide == 0) firstPlacedSide = 1;
         }
         else // Right Side
         {
@@ -76,13 +75,12 @@ public class SeesawController : MonoBehaviour
             itemInstance.transform.localPosition = Vector3.zero;
             //itemInstance.transform.localRotation = Quaternion.identity;
 
-            if (firstPlacedSide == 0) firstPlacedSide = 1;
         }
 
         IsolationItem(itemInstance);
 
         // 3. 更新倾斜
-        TriggerSeesawReaction();
+        TriggerSeesawReaction(isNewItemLeft);
         return true;
     }
 
@@ -97,7 +95,6 @@ public class SeesawController : MonoBehaviour
         GameObject removedItem = null;
         if (isLeft && CurrentLeftItem != null)
         {
-            leftPlacementPoint.GetComponent<SeesawInteractive>().SetCurrentObjectNull();
             removedItem = CurrentLeftItem;
             // 清理内部状态
             CurrentLeftItem = null;
@@ -110,7 +107,6 @@ public class SeesawController : MonoBehaviour
         }
         else if (!isLeft && CurrentRightItem != null)
         {
-            rightPlacementPoint.GetComponent<SeesawInteractive>().SetCurrentObjectNull();
             removedItem = CurrentRightItem;
             // 清理内部状态
             CurrentRightItem = null;
@@ -248,7 +244,7 @@ public class SeesawController : MonoBehaviour
     /// <summary>
     /// 判断并执行是“倾斜”还是“弹起”。
     /// </summary>
-    private void TriggerSeesawReaction()
+    private void TriggerSeesawReaction(bool newItemIsLeft)
     {
         // 1. 如果两端中至少有一端没有物品，执行标准倾斜
         if (CurrentLeftItem == null || CurrentRightItem == null)
@@ -259,20 +255,27 @@ public class SeesawController : MonoBehaviour
 
         // 2. 两端都有物品，检查特殊“弹起”逻辑
 
-        // 放置顺序：先放轻的，再放重的，触发弹起
-        bool isLeftLightAndFirst = (leftWeight < rightWeight) && (firstPlacedSide == 1);
-        bool isRightLightAndFirst = (rightWeight < leftWeight) && (firstPlacedSide == 2);
+        float newWeight = newItemIsLeft ? leftWeight : rightWeight;
+        float oldWeight = newItemIsLeft ? rightWeight : leftWeight;
 
-        if (isLeftLightAndFirst || isRightLightAndFirst)
+        if (newWeight >oldWeight)
         {
             // 找出轻物所在的边
-            bool lightSideIsLeft = isLeftLightAndFirst;
+            bool lightSideIsLeft = !newItemIsLeft;
 
             // 1. 强制跷跷板倾斜到重物那一端
             UpdateSeesawTilt();
 
             // 2. 移除轻物（脱离跷跷板系统）
             GameObject lightItem = RemoveItem(lightSideIsLeft);
+            if (lightSideIsLeft)
+            {
+                leftPlacementPoint.GetComponent<SeesawInteractive>().SetCurrentObjectNull();
+            }
+            else
+            {
+                rightPlacementPoint.GetComponent<SeesawInteractive>().SetCurrentObjectNull();
+            }
 
             // 3. 弹射轻物
             if (lightItem != null)

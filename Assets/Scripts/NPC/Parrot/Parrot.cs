@@ -151,8 +151,9 @@ public class Parrot : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (currentMode == ParrotMode.Idle && other.CompareTag("Player"))
+        if (currentMode == ParrotMode.Idle && other.CompareTag("Interactive"))
         {
+            DialogManager.Instance.ShowDialog("×çÖäÄã", transform.position, new Vector3(0, -2.5f, 0), this.transform);
             currentMode = ParrotMode.MovingR1;
             StartCoroutine(CollisionReaction());
         }
