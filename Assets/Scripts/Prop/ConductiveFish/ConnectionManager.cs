@@ -6,7 +6,7 @@ public class ConnectionManager : MonoBehaviour
 {
     public static ConnectionManager Instance { get; private set; }
 
-   
+    // 在此方案中，StartNode 和 EndNode 字段被移除，因为它们现在是导线
 
     private WireSegment[] allWires;
 
@@ -26,7 +26,7 @@ public class ConnectionManager : MonoBehaviour
 
     public void RefreshComponents()
     {
-        
+        // 查找场景中所有导线元件
         allWires = FindObjectsOfType<WireSegment>();
     }
 
@@ -35,7 +35,7 @@ public class ConnectionManager : MonoBehaviour
     /// </summary>
     public bool CheckConnectivity()
     {
-        // 1. 查找起点和终点
+        // 1. 查找起点和终点导线
         WireSegment startWire = allWires.FirstOrDefault(w => w.isStartWire);
         WireSegment endWire = allWires.FirstOrDefault(w => w.isEndWire);
 
@@ -69,13 +69,13 @@ public class ConnectionManager : MonoBehaviour
             if (currentWire == endWire)
             {
                 pathFound = true;
-                
+                // 注意：这里可以 break，但我们希望路径上的所有导线都变绿，所以我们让 SetPowerState 负责
             }
 
-            // 标记当前连接状态
+            // 标记当前导线为连接状态
             currentWire.SetPowerState(true);
 
-            // 遍历所有接触到的邻居
+            // 遍历所有接触到的邻居导线
             foreach (var neighbor in currentWire.neighbors)
             {
                 WireSegment nextWire = (WireSegment)neighbor;
