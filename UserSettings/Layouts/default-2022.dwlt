@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1706.6667
     height: 1024
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Inspector
   m_RootView: {fileID: 3}
   m_MinSize: {x: 875, y: 321}
   m_MaxSize: {x: 10000, y: 10000}
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 148
+  controlID: 164
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -173,7 +173,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 149
+  controlID: 165
   draggingID: 0
 --- !u!114 &8
 MonoBehaviour:
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 32
+  controlID: 20
   draggingID: 0
 --- !u!114 &9
 MonoBehaviour:
@@ -220,8 +220,8 @@ MonoBehaviour:
     y: 0
     width: 786.6667
     height: 440
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -805,9 +805,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 18.290134, y: -7.615401, z: 15.212166}
+    m_Target: {x: 9.645077, y: -7.1763186, z: -16.81971}
     speed: 2
-    m_Value: {x: 18.290134, y: -7.615401, z: 15.212166}
+    m_Value: {x: 9.645077, y: -7.1763186, z: -16.81971}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -853,13 +853,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.18737645, y: 0.68810827, z: -0.19103032, w: -0.67487}
+    m_Target: {x: -0.035776652, y: 0.9565709, z: -0.25838053, w: -0.13255502}
     speed: 2
-    m_Value: {x: -0.1873254, y: 0.6879208, z: -0.19097827, w: -0.67468613}
+    m_Value: {x: -0.035506897, y: 0.95639735, z: -0.25833362, w: -0.1315563}
   m_Size:
-    m_Target: 10
+    m_Target: 11.766808
     speed: 2
-    m_Value: 10
+    m_Value: 11.766808
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -995,25 +995,25 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: aa57ffff
-      m_LastClickedID: -43094
-      m_ExpandedIDs: 6e17ffffbaabffff04acfffff8dfffff6ce1ffff26fbffff326b0000b26b0000
+      m_SelectedIDs: d6e2ffff
+      m_LastClickedID: -7466
+      m_ExpandedIDs: 26fbffffe06a0000046b00009c6b0000b86b0000e06b00001c6c0000446c0000666c0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: 3
+        m_OriginalName: 3
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 27728
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
-        m_ClientGUIView: {fileID: 9}
+        m_ClientGUIView: {fileID: 11}
       m_SearchString: 
     m_ExpandedScenes: []
     m_CurrenRootInstanceID: 0
@@ -1066,7 +1066,8 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SkipHidden: 0
     m_SearchArea: 1
-    m_Folders: []
+    m_Folders:
+    - Assets/Scripts/NPC/TrashFishNPC
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1083,7 +1084,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 606d0000
     m_LastClickedID: 28000
-    m_ExpandedIDs: 00000000806c0000826c0000846c0000866c0000926c0000966c0000986c00009c6c0000a06c0000606d0000626d0000646d0000666d0000686d00006a6d00006c6d00006e6d0000706d000000ca9a3b
+    m_ExpandedIDs: 00000000f46c0000f66c0000f86c0000fa6c0000066d00000a6d00000c6d0000106d0000146d0000ce6d0000d06d0000d26d0000d46d0000d66d0000d86d0000da6d0000dc6d0000de6d0000e06d0000e26d0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1108,21 +1109,21 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 0}
+    scrollPos: {x: 0, y: 57}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: ffffffff00000000806c0000826c0000846c0000866c0000926c0000966c0000986c00009c6c0000a06c0000606d0000626d0000646d0000666d0000686d00006a6d00006c6d00006e6d0000706d0000da70000042710000
+    m_ExpandedIDs: ffffffff00000000f46c0000f66c0000f86c0000fa6c00000a6d00000c6d0000ce6d0000d06d0000d26d0000d46d0000d66d0000d86d0000dc6d0000de6d0000e06d0000e26d0000467100006c710000b8710000ba710000bc710000be710000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: WireSegment
-      m_OriginalName: WireSegment
+      m_Name: FishermanNPC
+      m_OriginalName: FishermanNPC
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 31802
+      m_UserData: 29604
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
       m_OriginalEventType: 0
@@ -1209,7 +1210,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectInstanceID: -1
-  m_LastVerticalScrollValue: 218.66656
+  m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
