@@ -46,6 +46,22 @@ public class TutorialManager : MonoBehaviour
         StartCoroutine(Step1_InitialGoalPrompt());
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (tabMenuPanel.activeSelf)
+            {
+                // 隐藏 TAB 菜单
+                tabMenuPanel.SetActive(false);
+            }
+            else
+            {
+                // 显示 TAB 菜单
+                tabMenuPanel.SetActive(true);
+            }
+        }
+    }
     IEnumerator Step1_InitialGoalPrompt()
     {
         // 1.2 目标提示：中央文字浮现（假设 GoalText 初始是可见的）

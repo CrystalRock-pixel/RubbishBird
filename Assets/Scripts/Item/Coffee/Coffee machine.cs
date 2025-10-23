@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Coffeemachine : MonoBehaviour, IInteractive
 {
+    public bool inLLevell3 = false;
+    private bool inSynthesis = false;
     public Transform instance { get => this.transform; set => throw new System.NotImplementedException(); }
     public bool Disposable { get; set; } = true;
 
@@ -28,7 +30,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
                 StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/CoffeeCup")));
                 return true;
             }
-            else if(interactiveItemName == "BadCoffeeBean")
+            else if (interactiveItemName == "BadCoffeeBean")
             {
                 player.OverInteractive();
                 //Debug.Log("制作咖啡中...");
@@ -40,14 +42,41 @@ public class Coffeemachine : MonoBehaviour, IInteractive
             else if (interactiveItemName == "CelesteStrawberry")
             {
                 //Debug.Log("正宗塞莱斯特草莓应该集齐202颗，并用于制作草莓派");
-                DialogManager.Instance.ShowDialog("正宗塞莱斯特草莓应该集齐202颗  并用于制作草莓派", transform.position,new Vector3(0,2.5f,0),this.transform);
+                DialogManager.Instance.ShowDialog("正宗塞莱斯特草莓应该集齐202颗  并用于制作草莓派", transform.position, new Vector3(0, 2.5f, 0), this.transform);
                 return false;
             }
-            else if(interactiveItemName.Contains("BaristaToy"))
+            else if (interactiveItemName.Contains("BaristaToy"))
             {
                 DialogManager.Instance.ShowDialog("材质解析中--------99% \n 成分解析中-------99% \n", transform.position, new Vector3(0, 2.5f, 0), this.transform);
                 Destroy(interacitveItem.instance.gameObject);
                 StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/DiamondPickaxe")));
+                return true;
+            }
+            else if (inSynthesis)
+            {
+                if (interactiveItemName.Contains("FirstWater") || interactiveItemName.Contains("FirstCoffeeBean"))
+                {
+                    DialogManager.Instance.ShowDialog("正在合成中...", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                    Destroy(interacitveItem.instance.gameObject);
+                    StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/DataCoffee")));
+                    inSynthesis = false;
+                    return true;
+                }
+                DialogManager.Instance.ShowDialog("需要起源之豆和源初之水", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                return false;
+            }
+            else if (interactiveItemName.Contains("FirstCoffeeBean"))
+            {
+                DialogManager.Instance.ShowDialog("已收集起源之豆", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                inSynthesis = true;
+                Destroy(interacitveItem.instance.gameObject);
+                return true;
+            }
+            else if (interactiveItemName.Contains("FirstWater"))
+            {
+                DialogManager.Instance.ShowDialog("已收集源初之水", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                inSynthesis = true;
+                Destroy(interacitveItem.instance.gameObject);
                 return true;
             }
             else

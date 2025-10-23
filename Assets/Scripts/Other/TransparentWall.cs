@@ -5,6 +5,7 @@ using UnityEngine;
 public class TransparentWall : MonoBehaviour
 {
     // 公开字段：用于在Inspector中调整透明度
+    private const string SURFACE_PROP = "_Surface";
     [Header("透明度设置")]
     [Tooltip("完全透明时的目标 Alpha 值 (0.0 = 完全透明)")]
     [Range(0f, 1f)]
@@ -24,6 +25,7 @@ public class TransparentWall : MonoBehaviour
     private float currentAlpha;
     private bool isOccluded = false;
 
+    private bool isTransparent = false;
     // 公开透明度属性
     public float CurrentTransparency => 1.0f - currentAlpha; // 透明度 (0.0=不透明, 1.0=完全透明)
 
@@ -42,12 +44,12 @@ public class TransparentWall : MonoBehaviour
 
         //// 确保材质支持透明度
         //SetupMaterialForTransparency();
-
         originalColor = objMaterial.color;
         currentAlpha = originalColor.a;
 
         // 初始状态设置为不透明
         SetMaterialAlpha(opaqueAlpha);
+        SetMaterialOpaque();
     }
 
     //void SetupMaterialForTransparency()
@@ -92,6 +94,10 @@ public class TransparentWall : MonoBehaviour
 
         if (Mathf.Abs(currentAlpha - target) > 0.001f)
         {
+            if (isOccluded&&!isTransparent)
+            {
+                SetMaterialTransparent();
+            }
             // 平滑过渡 Alpha 值
             float newAlpha = Mathf.MoveTowards(currentAlpha, target, fadeSpeed * Time.deltaTime);
             SetMaterialAlpha(newAlpha);
@@ -105,5 +111,36 @@ public class TransparentWall : MonoBehaviour
         {
             Destroy(objMaterial);
         }
+    }
+
+    public void SetMaterialTransparent()
+    {
+        isTransparent = true;
+        objMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        objMaterial.SetOverrideTag("RenderType", "Transparent");
+        // 2. 设置 Blending Mode (例如 Alpha = 0)
+        objMaterial.SetFloat("_BlendMode", 0f);
+        objMaterial.SetFloat(SURFACE_PROP, 1f);
+
+        Shader shader = objMaterial.shader;
+
+        // 强制重新分配Shader，有时可以触发Shader的内部刷新
+        objMaterial.shader = null;
+        objMaterial.shader = shader;
+    }
+    public void SetMaterialOpaque()
+    {
+        isTransparent = false;
+        objMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        objMaterial.SetOverrideTag("RenderType", "Opaque");
+        // 2. 设置 Blending Mode (例如 Alpha = 1)
+        objMaterial.SetFloat("_BlendMode", 1f);
+        objMaterial.SetFloat(SURFACE_PROP, 0f);
+
+        Shader shader = objMaterial.shader;
+
+        // 强制重新分配Shader，有时可以触发Shader的内部刷新
+        objMaterial.shader = null;
+        objMaterial.shader = shader;
     }
 }

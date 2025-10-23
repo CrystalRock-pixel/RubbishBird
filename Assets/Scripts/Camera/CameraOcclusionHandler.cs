@@ -50,6 +50,7 @@ public class CameraOcclusionHandler : MonoBehaviour
         {
             if (currentlyOccludedObjects.Add(obj)) // 如果是新加入的物体
             {
+                obj.SetMaterialTransparent();
                 obj.SetOcclusion(true);
             }
         }
@@ -62,6 +63,7 @@ public class CameraOcclusionHandler : MonoBehaviour
             if (!objectsToOcclude.Contains(obj))
             {
                 obj.SetOcclusion(false);
+                obj.SetMaterialOpaque();
                 objectsToRemove.Add(obj);
             }
         }
