@@ -49,6 +49,11 @@ public class PlayerMoveState : PlayerStateBase
            StateMachine.ChangeState(player.jumpState);
         }
 
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            StateMachine.ChangeState(player.featherState);
+        }
+
         animator.SetFloat("InputX",horizontalInput);
         animator.SetFloat("InputZ",verticalInput);
     }

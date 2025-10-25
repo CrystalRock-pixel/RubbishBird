@@ -13,8 +13,8 @@ public class Player : MonoBehaviour
 
     [Header("跳跃参数")]
     public float jumpForce = 5f; // 跳跃力度
-    public bool isGrounded => Physics.Raycast(transform.position + Vector3.down*0.5f+Vector3.right*0.4f, Vector3.down, 0.7f)
-        || Physics.Raycast(transform.position + Vector3.down*0.5f + Vector3.left*0.4f, Vector3.down, 0.7f);
+    public bool isGrounded => Physics.Raycast(transform.position + Vector3.down*0.4f+Vector3.right*0.3f, Vector3.down, 0.8f)
+        || Physics.Raycast(transform.position + Vector3.down*0.4f + Vector3.left*0.3f, Vector3.down, 0.8f);
     //public bool isGrounded = true; // 是否在地面上
     
     [Header("交互参数")]
@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
     public PlayerIdleState idleState;
     public PlayerMoveState moveState;
     public PlayerJumpState jumpState;
+    public PlayerFeatherState featherState;
 
 
     private static Player instance;
@@ -64,6 +65,7 @@ public class Player : MonoBehaviour
         idleState = new PlayerIdleState(stateMachine);
         moveState = new PlayerMoveState(stateMachine);
         jumpState = new PlayerJumpState(stateMachine);
+        featherState = new PlayerFeatherState(stateMachine);
     }
     private void Start()
     {
@@ -114,7 +116,8 @@ public class Player : MonoBehaviour
             }
             else if (currentInteractiveItem == null&&interactiveItems.Count>0)
             {
-                IInteractive interactive = interactiveItems[0];
+                IInteractive interactive = GetFirstInteractiveItem();
+
                 if (!TryInteracitveWithItem(interactive))
                 {
                     OverInteractive();
@@ -126,6 +129,19 @@ public class Player : MonoBehaviour
         {
             MakeCall();
         }
+
+    }
+
+    IInteractive GetFirstInteractiveItem()
+    {
+        int index = 0;
+        IInteractive interactive = interactiveItems[index];
+        while (interactive == null)
+        {
+            index++;
+            interactive = interactiveItems[index];
+        }
+        return interactive;
     }
 
     private void OnTriggerStay(Collider other)
@@ -137,6 +153,7 @@ public class Player : MonoBehaviour
             if (interactive != null&&!interactiveItems.Contains(interactive))
             {
                 interactiveItems.Add(interactive);
+                Debug.Log(interactive + "进入");
             }
         }
     }
@@ -150,6 +167,7 @@ public class Player : MonoBehaviour
             if (interactive != null)
             {
                 interactiveItems.Remove(interactive);
+                Debug.Log(interactive + "离开");
             }
         }
         //if (other.CompareTag("Ground"))
@@ -170,11 +188,11 @@ public class Player : MonoBehaviour
         Color rayColor = isGrounded ? Color.green : Color.red; // 如果击中地面，显示绿色；否则显示红色
 
         Debug.DrawRay(
-        transform.position + Vector3.down * 0.5f + Vector3.right * 0.4f, Vector3.down * 0.7f,
+        transform.position + Vector3.down * 0.4f + Vector3.right * 0.3f, Vector3.down * 0.8f,
             rayColor
         );
         Debug.DrawRay(
-       transform.position + Vector3.down * 0.5f + Vector3.left * 0.4f, Vector3.down * 0.7f,
+       transform.position + Vector3.down * 0.4f + Vector3.left * 0.3f, Vector3.down * 0.8f,
            rayColor
        );
     }
@@ -220,6 +238,8 @@ public class Player : MonoBehaviour
 
     public void OverInteractive()
     {
+        interactiveItems.Remove(currentInteractiveItem);
+        Debug.Log(currentInteractiveItem + "交互结束");
         currentInteractiveItem = null;
         //canInteracitve = true;
         moveSpeed = oriMoveSpeed;
@@ -244,6 +264,12 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
         animator.SetBool(boolName, false);
+    }
+
+    IEnumerator InstantiateFeatherAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Instantiate(Resources.Load<GameObject>("Prefabs/Item/Feather"), transform.position, Quaternion.identity);
     }
 
     //private void Die()
@@ -278,6 +304,13 @@ public class Player : MonoBehaviour
                 reactor.React();
             }
         }
+
+        AtmosphereManager.Instance.GlobalAngerTrigger = true;
+    }
+
+    public void InstantiateFeather(float delayTime)
+    {
+        StartCoroutine(InstantiateFeatherAfterDelay(delayTime));
     }
 
     // 可视化范围（仅在编辑器中）

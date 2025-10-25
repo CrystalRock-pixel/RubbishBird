@@ -24,7 +24,7 @@ public class MainCamara : MonoBehaviour
     private void Start()
     {
         target = Player.Instance.transform;
-        offset = this.transform.position;
+        offset = this.transform.position-target.position;
     }
     public void Update()
     {

@@ -34,5 +34,9 @@ public class PlayerIdleState : PlayerStateBase
         {
             StateMachine.ChangeState(player.jumpState);
         }
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+            StateMachine.ChangeState(player.featherState);
+        }
     }
 }

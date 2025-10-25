@@ -172,7 +172,7 @@ public static class ConvexHull3D
             projectedPoints = points
                 .Select((p, i) => new IndexedVector2 { originalIndex = i, v2 = new Vector2(p.x, p.y) })
                 .ToList();
-            Debug.Log("凸包计算：投影到 XY 平面 (忽略 Z 坐标)");
+            //Debug.Log("凸包计算：投影到 XY 平面 (忽略 Z 坐标)");
         }
         else
         {
@@ -180,7 +180,7 @@ public static class ConvexHull3D
             projectedPoints = points
                 .Select((p, i) => new IndexedVector2 { originalIndex = i, v2 = new Vector2(p.z, p.y) })
                 .ToList();
-            Debug.Log("凸包计算：投影到 YZ 平面 (忽略 X 坐标)");
+            //Debug.Log("凸包计算：投影到 YZ 平面 (忽略 X 坐标)");
         }
 
         // 3. 计算 2D 凸包 (Monotone Chain)

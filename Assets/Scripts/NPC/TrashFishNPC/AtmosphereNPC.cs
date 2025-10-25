@@ -341,7 +341,15 @@ public class AtmosphereNPC : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"{name}: 未找到 SpriteRenderer 组件，无法切换 Sprite。");
+            spriteRenderer=transform.GetChild(0).GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                defaultSprite = spriteRenderer.sprite;
+            }
+            else
+            {
+                Debug.LogWarning($"{name}: 未找到 SpriteRenderer 组件，无法切换 Sprite。");
+            }
         }
     }
 

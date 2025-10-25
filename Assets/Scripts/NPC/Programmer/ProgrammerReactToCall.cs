@@ -20,7 +20,7 @@ public class ProgrammerReactToCall : ReactToCall
         if (interactive != null)
         {
             string itemName = interactive.instance.name;
-            if (itemName=="CoffeeCup(Clone)")
+            if (itemName=="CoffeeCup(Clone)"||itemName=="MilkCup(Clone)")
             {
                 DialogManager.Instance.ShowDialog("°¡°¡°¡ ÄÄÀ´µÄÄñ  °¡°¡°¡°¡°¡ ÎÒµÄµçÄÔ", transform.position, dialogOffset, this.transform);
                 Destroy(interactive.instance.gameObject);
