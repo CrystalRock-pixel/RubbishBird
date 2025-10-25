@@ -151,9 +151,32 @@ public class Parrot : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (currentMode == ParrotMode.Idle && other.CompareTag("Interactive"))
+        //if (currentMode == ParrotMode.Idle && other.CompareTag("Interactive"))
+        //{
+        //    DialogManager.Instance.ShowDialog("111", transform.position, new Vector3(0, -2.5f, 0), this.transform);
+        //    currentMode = ParrotMode.MovingR1;
+        //    StartCoroutine(CollisionReaction());
+        //}
+        // 确保碰撞对象存在，防止 other 在退出前被销毁
+        if (other == null) return;
+
+        // 假设 R1 触发的逻辑已经修改（使用您上一个回答中建议的逻辑）
+        if ((currentMode == ParrotMode.Idle || currentMode == ParrotMode.WaitingR3 || currentMode == ParrotMode.MovingR2)
+            && other.CompareTag("Interactive"))
         {
-            DialogManager.Instance.ShowDialog("诅咒你", transform.position, new Vector3(0, -2.5f, 0), this.transform);
+            // **【关键修改点】** 检查 DialogManager 是否存在
+            if (DialogManager.Instance != null)
+            {
+                // 只有当 DialogManager 存在时才调用
+                DialogManager.Instance.ShowDialog("诅咒你", transform.position, new Vector3(0, -2.5f, 0), this.transform);
+            }
+            else
+            {
+                // 如果不存在，打印警告或执行替代逻辑
+                Debug.LogWarning("Parrot: DialogManager.Instance 尚未初始化或已销毁，无法显示对话。");
+            }
+
+            // 无论对话是否显示，状态都应该切换，以保证主要逻辑继续执行
             currentMode = ParrotMode.MovingR1;
             StartCoroutine(CollisionReaction());
         }
