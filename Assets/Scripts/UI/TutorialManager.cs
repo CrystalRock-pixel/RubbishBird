@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
 {
+    public static TutorialManager instance;
     // === UI 引用 ===
     public TMP_Text goalText;
     public GameObject tabUIIndicator; // 左上角的 Tab UI
@@ -15,8 +17,24 @@ public class TutorialManager : MonoBehaviour
     public float fadeOutDuration = 0.5f; // 渐隐持续时间
     public float moveDuration = 1.0f; // 移动到左上角的时间
 
+    public GameObject nextButton; // 用于播放完动画后的下一步
+
     private Vector3 centerPosition;
     private Vector3 tabUIPosition;
+
+    private void Awake()
+    {
+        // 单例模式
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -42,8 +60,11 @@ public class TutorialManager : MonoBehaviour
             tabUIPosition += new Vector3(goalText.rectTransform.rect.width / 2, 0, 0);
         }
 
-        // 启动引导流程的第一个步骤
-        StartCoroutine(Step1_InitialGoalPrompt());
+        //// 启动引导流程的第一个步骤
+        //StartCoroutine(Step1_InitialGoalPrompt());
+
+        VideoManager.Instance.OnVideoHeld += ActiveNextButton;
+        VideoManager.Instance.OnVideoFinished += DeactivateNextButton;
     }
 
     private void Update()
@@ -61,6 +82,21 @@ public class TutorialManager : MonoBehaviour
                 tabMenuPanel.SetActive(true);
             }
         }
+    }
+
+    void ActiveNextButton()
+    {
+        nextButton.SetActive(true);
+    }
+    void DeactivateNextButton()
+    {
+        nextButton.SetActive(false);
+    }
+
+    public void StartPrompt()
+    {
+        // 启动引导流程的第一个步骤
+        StartCoroutine(Step1_InitialGoalPrompt());
     }
     IEnumerator Step1_InitialGoalPrompt()
     {
