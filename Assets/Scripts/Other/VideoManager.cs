@@ -26,6 +26,10 @@ public class VideoManager : MonoBehaviour
     // 播放结束并恢复游戏时间的事件
     public event Action OnVideoFinished;
 
+    public event Action<AnimationCompleteEventArgs> OnVideoComplete;
+
+    private AnimationCompleteEventArgs pendingArgs; // 用于存储 过关检测脚本 传入的参数
+
     private void Awake()
     {
         // 确保只有一个实例 (单例模式)
@@ -62,7 +66,7 @@ public class VideoManager : MonoBehaviour
 
     private void Start()
     {
-        PlayVideoClip(start);
+        PlayVideoClip(start,null);
     }
 
     private void OnDestroy()
@@ -82,9 +86,10 @@ public class VideoManager : MonoBehaviour
     /// </summary>
     /// <param name="clip">要播放的 VideoClip 文件（MP4 导入 Unity 后生成的资产）。</param>
     /// <param name="loop">是否循环播放。</param>
-    public void PlayVideoClip(VideoClip clip, bool loop = false)
+    public void PlayVideoClip(VideoClip clip, AnimationCompleteEventArgs args, bool loop = false)
     {
         currentClip = clip;
+        this.pendingArgs = args;
         if (clip == null)
         {
             Debug.LogError("VideoClip is null. Cannot play video.");
@@ -163,10 +168,17 @@ public class VideoManager : MonoBehaviour
         // 触发最终完成事件
         OnVideoFinished?.Invoke();
 
-        if (currentClip == start)
+        if (pendingArgs != null)
         {
-            TutorialManager.instance.StartPrompt();
+            OnVideoComplete?.Invoke(pendingArgs);
         }
+        this.pendingArgs = null;
+
+
+        //if (currentClip == start)
+        //{
+        //    TutorialManager.instance.StartPrompt();
+        //}
     }
 
     /// <summary>

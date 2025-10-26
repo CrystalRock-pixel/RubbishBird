@@ -40,6 +40,10 @@ public class Player : MonoBehaviour
     public PlayerJumpState jumpState;
     public PlayerFeatherState featherState;
 
+    //能力标志
+    public bool canJump;
+    public bool canFeather;
+
 
     private static Player instance;
     public static Player Instance
@@ -71,6 +75,8 @@ public class Player : MonoBehaviour
     {
         //canInteracitve = false;
         stateMachine.Initialize(idleState);
+        canJump = false;
+        canFeather = false;
     }
 
     private void Update()
@@ -90,7 +96,7 @@ public class Player : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal"); // X 轴方向输入
         verticalInput = Input.GetAxis("Vertical");   // Z 轴方向输入
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             if (currentInteractiveItem != null&&interactiveItems.Count!=0)   //当玩家持有交互物体，同时交互列表有另一个物体时，检测两个交互物体之间是否有交互
             {
@@ -125,7 +131,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             MakeCall();
         }

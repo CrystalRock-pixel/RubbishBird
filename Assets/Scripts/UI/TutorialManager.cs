@@ -11,6 +11,7 @@ public class TutorialManager : MonoBehaviour
     public TMP_Text goalText;
     public GameObject tabUIIndicator; // 左上角的 Tab UI
     public TextMeshProUGUI tabPromptText; // 新增：用于 "按TAB查看提示" 的文本
+    public TextMeshProUGUI tabMenuContentText;
     public GameObject tabMenuPanel;     // TAB 菜单面板 (3.1)
     public TextMeshProUGUI wasdPromptText; // WASD 提示文本 (3.2)
     public float initialDelay = 3f; // 初始停留时间
@@ -21,6 +22,9 @@ public class TutorialManager : MonoBehaviour
 
     private Vector3 centerPosition;
     private Vector3 tabUIPosition;
+
+    // 存储初始的 WASD 文本颜色，以便隐藏时设置其Alpha为0
+    private Color initialWASDColor;
 
     private void Awake()
     {
@@ -65,6 +69,8 @@ public class TutorialManager : MonoBehaviour
 
         VideoManager.Instance.OnVideoHeld += ActiveNextButton;
         VideoManager.Instance.OnVideoFinished += DeactivateNextButton;
+        VideoManager.Instance.OnVideoFinished += StartPrompt;
+        VideoManager.Instance.OnVideoComplete += ConfigureAndStartSimplifiedPrompt;
     }
 
     private void Update()
@@ -342,4 +348,185 @@ public class TutorialManager : MonoBehaviour
             yield return null; // 每帧检查
         }
     }
+
+
+    /// <summary>
+    /// 配置引导文本内容，并启动简化的引导流程。
+    /// 流程：GoalPrompt (移动/渐隐) -> TabPrompt (渐入/渐出) -> TabInputCheck (结束)
+    /// </summary>
+    /// <param name="newGoalText">新的目标提示文本内容。</param>
+    /// <param name="newTabPrompt">新的TAB提示文本内容。</param>
+    /// <summary>
+     /// 配置引导文本内容（GoalText 和 Tab 菜单内部文本），并启动简化的引导流程。
+     /// 流程：GoalPrompt (移动/渐隐) -> TabPrompt (渐入/渐出) -> InputCheck (结束)
+     /// </summary>
+     /// <param name="newGoalText">新的目标提示文本内容。</param>
+     /// <param name="newTabMenuContent">TAB 菜单内部需要修改的文本内容。</param>
+     /// <param name="newTabPrompt">（可选）新的TAB提示文本内容。如果不提供，使用默认值。</param>
+    public void ConfigureAndStartSimplifiedPrompt(AnimationCompleteEventArgs args)
+    {
+        // 1. 停止所有正在运行的引导协程，防止干扰
+        StopAllCoroutines();
+
+        // 2. 更新 UI 内容
+        if (goalText != null)
+        {
+            goalText.text =args.newGoalText;
+            // 确保 goalText 在开始前是可见且不透明的
+            Color c = goalText.color;
+            c.a = 1f;
+            goalText.color = c;
+        }
+
+        // 更新 TAB 菜单内部的文本 <--- 重点修改部分
+        if (tabMenuContentText != null)
+        {
+            tabMenuContentText.text = args.newTabMenuContent;
+        }
+
+        // 3. 确保 WASD 提示绝对隐藏（重构要求）
+        if (wasdPromptText != null)
+        {
+            wasdPromptText.gameObject.SetActive(false);
+            wasdPromptText.color = initialWASDColor; // 恢复颜色以便下次使用
+        }
+
+        // 4. 启动简化的流程
+        StartCoroutine(Step_SimplifiedGoalPrompt());
+    }
+
+    // =========================================================
+    // 【简化流程协程 - 逻辑不变，只更新注释和连接】
+    // =========================================================
+
+    IEnumerator Step_SimplifiedGoalPrompt()
+    {
+        // 1.2 目标提示：中央文字浮现
+        goalText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(initialDelay);
+
+        // 1.3 左上角"tab"UI出现
+        if (tabUIIndicator != null)
+        {
+            tabUIIndicator.SetActive(true);
+        }
+
+        // 1.3 移动到左上角并渐隐 (动画逻辑不变)
+        float timer = 0f;
+        Color initialColor = goalText.color;
+
+        while (timer < moveDuration)
+        {
+            float t = timer / moveDuration;
+
+            // 移动
+            goalText.rectTransform.localPosition = Vector3.Lerp(centerPosition, tabUIPosition, t);
+
+            // 渐隐
+            if (timer >= moveDuration - fadeOutDuration)
+            {
+                float fadeT = (timer - (moveDuration - fadeOutDuration)) / fadeOutDuration;
+                fadeT = Mathf.Clamp01(fadeT);
+
+                Color newColor = initialColor;
+                newColor.a = Mathf.Lerp(1f, 0f, fadeT);
+                goalText.color = newColor;
+            }
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // 确保最终状态
+        goalText.gameObject.SetActive(false);
+
+        // 流程进入下一步：【连接到简化的 TAB 提示】
+        StartCoroutine(Step_SimplifiedTabCheckPrompt());
+    }
+
+    IEnumerator Step_SimplifiedTabCheckPrompt()
+    {
+        // 确保一开始是透明的
+        Color initialColor = tabPromptText.color;
+        initialColor.a = 0f;
+        tabPromptText.color = initialColor;
+        tabPromptText.gameObject.SetActive(true);
+
+        // 渐现
+        float fadeInTimer = 0f;
+        float fadeInDuration = 0.5f;
+
+        while (fadeInTimer < fadeInDuration)
+        {
+            fadeInTimer += Time.deltaTime;
+            float alpha = Mathf.Lerp(0f, 1f, fadeInTimer / fadeInDuration);
+            Color c = initialColor;
+            c.a = alpha;
+            tabPromptText.color = c;
+            yield return null;
+        }
+        initialColor.a = 1f;
+        tabPromptText.color = initialColor;
+
+        // 停留
+        yield return new WaitForSeconds(1f);
+
+        // 渐隐
+        float fadeOutTimer = 0f;
+        float fadeOutDuration = 0.5f;
+
+        while (fadeOutTimer < fadeOutDuration)
+        {
+            fadeOutTimer += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, fadeOutTimer / fadeOutDuration);
+            Color c = initialColor;
+            c.a = alpha;
+            tabPromptText.color = c;
+            yield return null;
+        }
+
+        // 最终消失
+        tabPromptText.gameObject.SetActive(false);
+
+        // 流程进入下一步：【连接到简化的输入检测】
+        StartCoroutine(Step_SimplifiedInputCheck());
+    }
+
+    IEnumerator Step_SimplifiedInputCheck()
+    {
+        // 玩家可能在 Step2 结束前就已经按下了 TAB，这里给一个短时间等待（3秒），
+        // 允许玩家触发 TAB 菜单。
+        float tabCheckTimer = 3f;
+
+        while (tabCheckTimer > 0f)
+        {
+            // 注意：由于 Update 中有永久的 TAB 菜单开关逻辑，
+            // 这里的检测主要是为了给流程一个结束点。
+
+            // 如果玩家按下了 TAB 键，则认为完成了引导的目标，流程可以结束。
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                // 注意：我们不再调用 HandleTabMenu，因为 Update 已经在处理 TAB 菜单的开关。
+                // 如果我们希望流程只在玩家第一次按 TAB 时结束，可以设置一个标志位。
+                // 在当前简化的需求下，即使玩家不按，流程也应该继续结束。
+
+                // 如果需要确保在流程中至少“确认”一次TAB，可以加入一个短暂的等待。
+                yield return null; // 等待一帧，确保 Update 已经处理了 GetKeyDown
+                break;
+            }
+            tabCheckTimer -= Time.deltaTime;
+            yield return null;
+        }
+
+        // 无论是否按下 TAB，计时器结束后，引导流程都结束。
+        Debug.Log("简化的引导流程结束。");
+    }
+
+    // 原始的 HandleTabMenu 协程现在不再被简化流程调用，
+    // 因为 Update 函数已经接管了菜单的永久开关功能。
+    // 如果需要更复杂的流程控制（例如只有在引导期间才能打开一次菜单），
+    // 则需要修改 Update 函数或重新引入此协程。
+    // 为了简化和满足您“跟原来的流程一样，激活tabMenuPanel”的要求，我们依赖 Update 即可。
+
+    // 原始的 StartPrompt (完整流程) 保持不变，但为了简洁已删除。
 }

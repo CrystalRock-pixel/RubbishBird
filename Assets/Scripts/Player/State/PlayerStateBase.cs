@@ -15,6 +15,10 @@ public class PlayerStateBase : StateBase
     protected Rigidbody rb => player.rb;
     protected bool isGrounded => player.isGrounded;
 
+    protected bool canJump => player.canJump;
+
+    protected bool canFeather => player.canFeather;
+
     protected AudioSource audioSource => player.audioSource;
 
     public override void OnEnter()
