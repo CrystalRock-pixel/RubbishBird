@@ -30,11 +30,11 @@ public class PlayerIdleState : PlayerStateBase
         {
             StateMachine.ChangeState(player.moveState);
         }
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded&&canJump)
         {
             StateMachine.ChangeState(player.jumpState);
         }
-        if(Input.GetKeyDown(KeyCode.F))
+        if(Input.GetKeyDown(KeyCode.E)&&canFeather)
         {
             StateMachine.ChangeState(player.featherState);
         }
