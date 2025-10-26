@@ -21,6 +21,7 @@ public class AnimationCompleteEventArgs : EventArgs
 
 public class LevelManager : MonoBehaviour
 {
+    public static LevelManager instance;
     public enum LevelType
     {
         Coffee,
@@ -30,6 +31,24 @@ public class LevelManager : MonoBehaviour
     private Player player;
     public LevelType type;
 
+    public GameObject trueCoffeeLab;
+    public GameObject fakeCoffeeLab;
+
+    public Transform level2Point;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
     private void Start()
     {
         player = Player.Instance;
@@ -43,9 +62,25 @@ public class LevelManager : MonoBehaviour
                 "°´E°ÎÓðÃ«",
                 "Ä¿±ê:  ÐÞ¸´µÆËþ£¬¿ªµÆÑ°ÕÒÏßË÷ \n ×ó¼ü:  ×Ä \n ÓÒ¼ü:  Ãù½Ð \n E¼ü:  °ÎÒ»¸ùÓðÃ«"
             );
-            VideoManager.Instance.PlayVideoClip(VideoManager.Instance.electricity,args);
 
+            trueCoffeeLab.transform.position += new Vector3(0, 50, 0);
+            trueCoffeeLab.SetActive(false);
+            fakeCoffeeLab.SetActive(true);
+
+            player.transform.position = level2Point.position;
+
+            VideoManager.Instance.PlayVideoClip(VideoManager.Instance.electricity,args);
         }
+    }
+
+    public void GotoLevelThree()
+    {
+        player.canJump = true;
+        AnimationCompleteEventArgs args = new AnimationCompleteEventArgs(
+              "°´¿Õ¸ñ¼üÌøÔ¾",
+              "Ä¿±ê:  ÀûÓÃ¸ÕÄÃµ½µÄ½Å£¬·µ»Ø¿§·È¹ÝÐÞ¸´bug \n ×ó¼ü:  ×Ä \n ÓÒ¼ü:  Ãù½Ð \n E¼ü:  °ÎÒ»¸ùÓðÃ«"
+          );
+        VideoManager.Instance.PlayVideoClip(VideoManager.Instance.findFeet, args);
     }
 
 }

@@ -24,6 +24,7 @@ public class WrenchSwitch : MonoBehaviour, IInteractive
                     player.OverInteractive();
                     Destroy(interactiveItem.instance.gameObject);
                     DialogManager.Instance.ShowDialog("开关修理成功", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                    LevelManager.instance.GotoLevelThree();
                     return true;
                 }
                 else
