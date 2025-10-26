@@ -57,6 +57,8 @@ public class Parrot : MonoBehaviour
     [Header("被砸的时间")]
     public float hitSpriteDuration = 0.2f; // 被砸素材持续时间
 
+    private bool isDied = false; // 用于禁止后续状态切换的总开关
+
 
     private void Start()
     {
@@ -68,8 +70,6 @@ public class Parrot : MonoBehaviour
             return;
         }
 
-        
-
         route1Points = ExtractWaypoints(route1Parent);
         route2Points = ExtractWaypoints(route2Parent);
         route3Points = ExtractWaypoints(route3Parent);
@@ -78,6 +78,13 @@ public class Parrot : MonoBehaviour
         currentMode = ParrotMode.Idle;
 
         collidersInRange = new Collider[10];
+
+        // 确保初始状态下禁用物理和碰撞
+        if (attachedChild != null)
+        {
+            attachedChild.GetComponent<Rigidbody>().isKinematic = true;
+            attachedChild.transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
+        }
     }
 
     // 从父物体中提取有序的路点 (保持不变)
@@ -86,6 +93,7 @@ public class Parrot : MonoBehaviour
         List<Vector3> waypoints = new List<Vector3>();
         if (parent == null) return waypoints;
 
+        // 使用 Linq 确保按照层级索引排序
         Transform[] children = parent.Cast<Transform>()
                                      .OrderBy(t => t.GetSiblingIndex())
                                      .ToArray();
@@ -101,19 +109,25 @@ public class Parrot : MonoBehaviour
 
     private void Update()
     {
+        // R1 或 R3 路线结束后，isDied 为 true，直接退出，禁止所有后续逻辑
+        if (isDied)
+        {
+            return;
+        }
 
+        // 正在移动中，优先执行移动逻辑
         if (currentMode == ParrotMode.MovingR1 || currentMode == ParrotMode.MovingR2 || currentMode == ParrotMode.MovingR3)
         {
             MoveAlongPath();
             return;
         }
 
-
+        // 处于 WaitingR3 状态，仅检测 R3 触发
         if (currentMode == ParrotMode.WaitingR3)
         {
-
             if (triggerRoute3)
             {
+                // R2 -> R3 切换
                 currentMode = ParrotMode.MovingR3;
 
                 // 启动飞行素材动画
@@ -121,17 +135,20 @@ public class Parrot : MonoBehaviour
 
                 UnbindChild();
                 StartMovement(route3Points);
+                // 注意：isDied 转移到 MoveAlongPath 结束时设置
             }
 
             return;
         }
 
 
+        // 处于 Idle 状态，检测 R3 触发和 R2 触发
         if (currentMode == ParrotMode.Idle)
         {
-
+            // R3 触发（优先级较高）
             if (triggerRoute3)
             {
+                // Idle -> R3 切换 (作为独立路线的入口)
                 currentMode = ParrotMode.MovingR3;
 
                 // 启动飞行素材动画
@@ -139,10 +156,11 @@ public class Parrot : MonoBehaviour
 
                 UnbindChild();
                 StartMovement(route3Points);
+                // 注意：isDied 转移到 MoveAlongPath 结束时设置
                 return;
             }
 
-
+            // R2 触发
             CheckTargetCount();
         }
     }
@@ -150,24 +168,20 @@ public class Parrot : MonoBehaviour
     // 碰撞检测（玩家碰撞）
     private void OnTriggerEnter(Collider other)
     {
+        // 碰撞触发 R1 时的总开关检查
+        if (isDied) return;
 
-        //if (currentMode == ParrotMode.Idle && other.CompareTag("Interactive"))
-        //{
-        //    DialogManager.Instance.ShowDialog("111", transform.position, new Vector3(0, -2.5f, 0), this.transform);
-        //    currentMode = ParrotMode.MovingR1;
-        //    StartCoroutine(CollisionReaction());
-        //}
         // 确保碰撞对象存在，防止 other 在退出前被销毁
         if (other == null) return;
+        //else Debug.Log(other.name); // 保持原有调试日志，可选
 
-        // 假设 R1 触发的逻辑已经修改（使用您上一个回答中建议的逻辑）
+        // 碰撞触发 R1 的条件
+        // 仅当状态为 Idle, WaitingR3, 或 MovingR2 时接受 R1 触发
         if ((currentMode == ParrotMode.Idle || currentMode == ParrotMode.WaitingR3 || currentMode == ParrotMode.MovingR2)
-            && other.CompareTag("Interactive"))
+            && other.CompareTag("Interactive") && other.name != "齿轮")
         {
-            // **【关键修改点】** 检查 DialogManager 是否存在
             if (DialogManager.Instance != null)
             {
-                // 只有当 DialogManager 存在时才调用
                 DialogManager.Instance.ShowDialog("诅咒你", transform.position, new Vector3(0, -2.5f, 0), this.transform);
             }
             else
@@ -176,7 +190,7 @@ public class Parrot : MonoBehaviour
                 Debug.LogWarning("Parrot: DialogManager.Instance 尚未初始化或已销毁，无法显示对话。");
             }
 
-            // 无论对话是否显示，状态都应该切换，以保证主要逻辑继续执行
+            // 无论对话是否显示，状态都应该切换
             currentMode = ParrotMode.MovingR1;
             StartCoroutine(CollisionReaction());
         }
@@ -194,11 +208,14 @@ public class Parrot : MonoBehaviour
 
         UnbindChild();
         StartMovement(route1Points);
+        // 注意：isDied 转移到 MoveAlongPath 结束时设置
     }
 
     // npc数量检测
     private void CheckTargetCount()
     {
+        // R2 触发时的总开关检查
+        if (isDied) return; // 再次确保死亡状态下不会触发
 
         int numColliders = Physics.OverlapSphereNonAlloc(transform.position, detectionRadius, collidersInRange, detectionLayer);
 
@@ -211,7 +228,8 @@ public class Parrot : MonoBehaviour
             }
         }
 
-        if (targetCount == 0)
+        // 仅在 targetCount == 0 时触发 R2 
+        if (targetCount == 0) // 移除了冗余的 !isDied 检查，因为 Update 顶部已有检查
         {
             // npc都走了，飞下来
             currentMode = ParrotMode.MovingR2; // 切换状态
@@ -223,9 +241,9 @@ public class Parrot : MonoBehaviour
         }
     }
 
-    
-    // 飞行动画控制
-  
+
+    // 飞行动画控制 (保持不变)
+
 
     // 启动飞行动画协程
     private void StartFlyingAnimation()
@@ -237,9 +255,9 @@ public class Parrot : MonoBehaviour
             return;
         }
 
-       
+
         StopCoroutine(FLY_ANIM_COROUTINE);
-        
+
         StartCoroutine(FLY_ANIM_COROUTINE);
     }
 
@@ -255,26 +273,27 @@ public class Parrot : MonoBehaviour
         WaitForSeconds wait = new WaitForSeconds(flyingAnimationSpeed);
         while (true)
         {
-            
+
             spriteRenderer.sprite = flyingSprite1;
             yield return wait;
 
-            
+
             spriteRenderer.sprite = flyingSprite2;
             yield return wait;
         }
     }
 
-    
+
 
     // 开始移动
     private void StartMovement(List<Vector3> waypoints)
     {
         if (waypoints == null || waypoints.Count == 0)
         {
+            // 路点无效，直接回到 Idle
             Debug.LogWarning($"ParrotMovement: 路线路点列表为空! 模式回到 Idle.");
             currentMode = ParrotMode.Idle;
-            StopFlyingAnimation(); // 路径无效，停止动画
+            StopFlyingAnimation();
             return;
         }
 
@@ -293,13 +312,21 @@ public class Parrot : MonoBehaviour
 
             if (currentMode == ParrotMode.MovingR2)
             {
-
+                // R2 结束：进入等待 R3 状态
                 spriteRenderer.sprite = initialSprite;
                 currentMode = ParrotMode.WaitingR3;
             }
-            else 
+            else if (currentMode == ParrotMode.MovingR1 || currentMode == ParrotMode.MovingR3)
             {
-
+                // R1 或 R3 结束：根据您的要求，禁止状态切换并禁用自身
+                Debug.Log($"Parrot: 路线 {currentMode} 完成。禁用鹦鹉。");
+                isDied = true;       // 标记为死亡状态
+                enabled = false;     // 禁用整个脚本 (Parrot AI 停止工作)
+                currentMode = ParrotMode.Idle; // 理论上不会再执行，但设置一下
+            }
+            else
+            {
+                // 其他移动状态结束，回到 Idle (备用逻辑)
                 currentMode = ParrotMode.Idle;
             }
 
@@ -323,12 +350,19 @@ public class Parrot : MonoBehaviour
         if (attachedChild != null && attachedChild.parent == transform)
         {
             attachedChild.SetParent(null);
+            // 确保 Rigidbody 和 Collider 存在才操作
+            Rigidbody rb = attachedChild.GetComponent<Rigidbody>();
+            if (rb != null) rb.isKinematic = false;
+
+            Transform childCollider = attachedChild.transform.GetChild(0);
+            BoxCollider bc = childCollider != null ? childCollider.GetComponent<BoxCollider>() : null;
+            if (bc != null) bc.enabled = true;
         }
     }
 
-    
-    // 可视化部分 
-   
+
+    // 可视化部分 (保持不变)
+
 
     private void OnDrawGizmosSelected()
     {

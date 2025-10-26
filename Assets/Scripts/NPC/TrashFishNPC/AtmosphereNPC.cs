@@ -287,6 +287,7 @@ public class AtmosphereNPC : MonoBehaviour
     [Header("逃跑参数")]
     public float escapeSpeed = 3f;
     private bool isEscaping = false;
+    public bool isEscapeNPC = false;
 
     [Header("自由走动参数")]
     public float wanderSpeed = 1.0f;
@@ -299,6 +300,11 @@ public class AtmosphereNPC : MonoBehaviour
 
     // 标记已经向 Manager 报告过自己已离开一次（避免重复上报）
     private bool hasReportedExited = false;
+
+    //标记场上存在烧焦羽毛的瞬间
+    private bool firstDialog = false;
+    //标记fistDialog是否应该更新
+    private bool canUpdateFirstDialog = true;
 
     private void Start()
     {
@@ -361,6 +367,18 @@ public class AtmosphereNPC : MonoBehaviour
         // 只有当羽毛存在 且 Manager 判定它可被普通 NPC 追踪时，才进行追踪
         if (attractTarget != null && AtmosphereManager.Instance.IsFeatherAvailableForGlobalTracking())
         {
+            if(!firstDialog && canUpdateFirstDialog)
+            {
+                firstDialog = true;
+                canUpdateFirstDialog = false;
+            }
+            if (firstDialog)
+            {
+                SelectedFeatherDialog();
+            }
+
+
+
             Vector3 targetPos = attractTarget.position;
             Vector3 dir = (targetPos - transform.position);
             dir.y = 0f;
@@ -374,6 +392,7 @@ public class AtmosphereNPC : MonoBehaviour
                 // 当接触到烧焦羽毛时通知 Manager 和羽毛脚本
                 AtmosphereManager.Instance.OnAttractionItemCollected(this);
                 attractTarget.GetComponent<shaojiaoyumao>()?.OnCollected();
+                canUpdateFirstDialog = true;
             }
 
             // 若在追踪则其他行为暂停
@@ -411,6 +430,7 @@ public class AtmosphereNPC : MonoBehaviour
             {
                 hasReportedExited = true;
                 AtmosphereManager.Instance?.NotifyNPCExitedArea(this);
+                DialogManager.Instance.ShowDialog("哪来的烧焦羽毛", transform.position, new Vector3(0, 2f, 0), this.transform);
             }
         }
         else if (isWandering)
@@ -453,7 +473,7 @@ public class AtmosphereNPC : MonoBehaviour
             spriteRenderer.sprite = angrySprite;
         }
 
-        if (level >= 2)
+        if (level >= 2&&isEscapeNPC)
         {
             isEscaping = true;
             isWandering = false;
@@ -503,6 +523,24 @@ public class AtmosphereNPC : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
         Recover();
+    }
+
+    private void SelectedFeatherDialog()
+    {
+        firstDialog = false;
+        float value = Random.Range(0f, 1f);
+        if (value < 0.5f&&value>0.3f)
+        {
+            DialogManager.Instance.ShowDialog("什么味道这是", transform.position, new Vector3(0, 2f, 0), this.transform);
+        }
+        else if(value<0.7f)
+        {
+            DialogManager.Instance.ShowDialog("何异味", transform.position, new Vector3(0, 2f, 0), this.transform);
+        }
+        else if (value < 0.9f)
+        {
+            DialogManager.Instance.ShowDialog("哪里着火了吗", transform.position, new Vector3(0, 2f, 0), this.transform);
+        }
     }
 
     private void OnDisable()

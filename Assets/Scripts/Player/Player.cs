@@ -153,7 +153,7 @@ public class Player : MonoBehaviour
             if (interactive != null&&!interactiveItems.Contains(interactive))
             {
                 interactiveItems.Add(interactive);
-                Debug.Log(interactive + "进入");
+                //Debug.Log(interactive + "进入");
             }
         }
     }
@@ -167,7 +167,7 @@ public class Player : MonoBehaviour
             if (interactive != null)
             {
                 interactiveItems.Remove(interactive);
-                Debug.Log(interactive + "离开");
+                //Debug.Log(interactive + "离开");
             }
         }
         //if (other.CompareTag("Ground"))
