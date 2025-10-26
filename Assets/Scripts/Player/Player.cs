@@ -27,6 +27,10 @@ public class Player : MonoBehaviour
     public float callRange = 10f; // 鸣叫范围半径
     public LayerMask reactiveLayer; // 确保只检测能做出反应的对象层级
 
+    [Header("手参数")]
+    public HandSpriteManager spriteManager;
+    public bool haveHand;
+
     [Header("组件引用")]
     public Rigidbody rb;
     private Transform cameraTransform; // 摄像机的 Transform
@@ -134,6 +138,11 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             MakeCall();
+        }
+
+        if (haveHand)
+        {
+            spriteManager.UpdateSpriteByInput(horizontalInput, verticalInput);
         }
 
     }
