@@ -10,6 +10,16 @@ public class WrenchSwitch : MonoBehaviour, IInteractive
     public bool isFixed = false;
     private Player player => Player.Instance;
     public GameObject towerLight;
+
+    private PowerDistributionBox powerBox;
+    private bool PowerBoxFixed = false;
+
+    private bool playLevelThreeVideo = true;
+
+    private void Start()
+    {
+        playLevelThreeVideo = true;
+    }
     public bool Interact()
     {
         if (isFixed == false)
@@ -24,7 +34,6 @@ public class WrenchSwitch : MonoBehaviour, IInteractive
                     player.OverInteractive();
                     Destroy(interactiveItem.instance.gameObject);
                     DialogManager.Instance.ShowDialog("开关修理成功", transform.position, new Vector3(0, 2.5f, 0), this.transform);
-                    LevelManager.instance.GotoLevelThree();
                     return true;
                 }
                 else
@@ -41,9 +50,23 @@ public class WrenchSwitch : MonoBehaviour, IInteractive
         }
         else
         {
-            RotateObjectAroundWorldY(towerLight, 30f);
-            DialogManager.Instance.ShowDialog("旋转灯塔", transform.position, new Vector3(0, 2.5f, 0), this.transform);
-            return true;
+            PowerBoxFixed = powerBox.isFixed;
+            if (PowerBoxFixed == false)
+            {
+                DialogManager.Instance.ShowDialog("开关是修好了  可是电从哪来", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                return false;
+            }
+            else
+            {
+                if(playLevelThreeVideo)
+                {
+                    LevelManager.instance.GotoLevelThree();
+                    playLevelThreeVideo = false;
+                }
+                RotateObjectAroundWorldY(towerLight, 30f);
+                DialogManager.Instance.ShowDialog("旋转灯塔", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                return true;
+            }
         }
     }
 

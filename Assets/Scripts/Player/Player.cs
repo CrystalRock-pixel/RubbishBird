@@ -227,7 +227,8 @@ public class Player : MonoBehaviour
     }
     public bool TryInteracitveWithItem(IInteractive item)
     {
-        if(item.Interact())
+        animator.SetTrigger("PickUp");
+        if (item.Interact())
         {
             if (!item.Disposable)
             {
@@ -243,7 +244,7 @@ public class Player : MonoBehaviour
 
     public void InteractiveWithPickedItem(IInteractive item)
     {
-        animator.SetTrigger("PickUp");
+        //animator.SetTrigger("PickUp");
     }
     public void InteracitveWithDragItem(IInteractive item)
     {
