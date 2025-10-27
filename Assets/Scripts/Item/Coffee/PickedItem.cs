@@ -18,10 +18,19 @@ public class PickedItem : MonoBehaviour, IInteractive
     }
     public virtual bool Interact()
     {
-        LosePhysic();
-        transform.position = player.transform.GetChild(0).position;
-        transform.SetParent(player.transform.GetChild(0));
-        return true;
+        IInteractive interactive = player.GetCurrentInteractiveItem();
+        if (interactive == null)
+        {
+            LosePhysic();
+            transform.position = player.transform.GetChild(0).position;
+            transform.SetParent(player.transform.GetChild(0));
+            return true;
+        }
+        else
+        {
+            DialogManager.Instance.ShowDialog("嘴里叼不下东西啦", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+            return false;
+        }
     }
 
     protected virtual void LosePhysic()

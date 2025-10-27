@@ -20,7 +20,7 @@ public interface IInteractive
 public class InteractiveHandler:MonoBehaviour
 {
     public BoxCollider trigger { get; set; }
-    public string intercatObjectTag;
+    public string interactObjectTag="Player";
     public bool canInteracting=false;
 
     public GameObject outlineObject;
@@ -32,14 +32,14 @@ public class InteractiveHandler:MonoBehaviour
         {
             outlineObject.SetActive(false);
         }
+        interactObjectTag = "Player";
     }
     private void Update()
     {
     }
     private void OnTriggerStay(Collider other)
     {
-        //Debug.Log(other.name);
-        if (other.CompareTag(intercatObjectTag))
+        if (other.CompareTag(interactObjectTag))
         {
             if (outlineObject != null)
             {
@@ -50,7 +50,7 @@ public class InteractiveHandler:MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(intercatObjectTag))
+        if (other.CompareTag(interactObjectTag))
         {
             if (outlineObject != null)
             {
@@ -61,7 +61,7 @@ public class InteractiveHandler:MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(intercatObjectTag))
+        if (other.CompareTag(interactObjectTag))
         {
             if (outlineObject != null)
             {

@@ -24,7 +24,7 @@ public class WireSegment : CircuitComponent
         }
 
         
-        GetComponent<Rigidbody>().isKinematic = true;
+        //GetComponent<Rigidbody>().isKinematic = true;
 
         // ≥ı ºªØ MeshRenderer
         meshRenderer = GetComponent<MeshRenderer>();

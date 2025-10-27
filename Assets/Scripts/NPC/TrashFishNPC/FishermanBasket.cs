@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class FishermanBasket : MonoBehaviour
+public class FishermanBasket : MonoBehaviour,IInteractive
 {
     [Header("生成设置")]
     public GameObject prefabToSpawn;        // 要弹出的预制体（例如：鱼、螃蟹等）
@@ -11,12 +11,18 @@ public class FishermanBasket : MonoBehaviour
     public float maxSpawnForce = 6f;        // 弹出的最大随机力度
     public float spawnRadius = 0.5f;        // 弹出的随机半径 (控制分散程度)
     public float spawnDelay = 0.5f;         // 延迟多久后弹出（给渔夫反应时间）
+    private bool beInteract = false;
 
     [Header("渔夫引用")]
     [Tooltip("拖拽场景中 FishermanNPC 脚本所在的物体")]
     public FishermanNPC fishermanNPC;
 
     private bool hasSpawned = false; // 标记是否已经生成过（避免重复生成）
+
+    private Player player;
+
+    public Transform instance { get => this.transform; set => throw new System.NotImplementedException(); }
+    public bool Disposable { get => true; set => throw new System.NotImplementedException(); }
 
     private void Start()
     {
@@ -36,6 +42,7 @@ public class FishermanBasket : MonoBehaviour
             Debug.LogError("FishermanBasket: PrefabToSpawn 未设置! 请设置要弹出的预制体。");
             enabled = false;
         }
+        player = Player.Instance;
     }
 
     private void Update()
@@ -44,7 +51,7 @@ public class FishermanBasket : MonoBehaviour
         if (fishermanNPC != null &&
             fishermanNPC.attachedChild != null &&
             fishermanNPC.attachedChild.transform.parent == null && // 检查是否被解锁
-            !hasSpawned)
+            !hasSpawned &&beInteract)
         {
             // 确保只触发一次
             hasSpawned = true;
@@ -95,5 +102,26 @@ public class FishermanBasket : MonoBehaviour
     {
         hasSpawned = false;
         StopAllCoroutines(); 
+    }
+
+    public bool Interact()
+    {
+        IInteractive interactive=player.GetCurrentInteractiveItem();
+        if (interactive != null)
+        {
+            DialogManager.Instance.ShowDialog("嘴里叼着东西 \n 鸟嘴装不下啦", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+            return false;
+        }
+        else
+        {
+            DialogManager.Instance.ShowDialog("什么叫鱼篓自己开始往外面喷鱼了", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+            beInteract = true;
+            return true;
+        }
+    }
+
+    public void InteractEnd()
+    {
+        throw new System.NotImplementedException();
     }
 }
