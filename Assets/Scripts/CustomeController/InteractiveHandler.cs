@@ -52,7 +52,7 @@ public class InteractiveHandler:MonoBehaviour
     {
         if (other.CompareTag(interactObjectTag))
         {
-            if (outlineObject != null)
+            if (sprite != null)
             {
                 DialogManager.Instance.ShowBubble(sprite, other.transform,DialogManager.Instance.bubblePlayerOffset);
             }

@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     public LayerMask reactiveLayer; // 确保只检测能做出反应的对象层级
 
     [Header("手参数")]
-    public HandSpriteManager spriteManager;
+    public HandSpriteManager handSpriteManager;
     public bool haveHand;
 
     [Header("组件引用")]
@@ -142,7 +142,11 @@ public class Player : MonoBehaviour
 
         if (haveHand)
         {
-            spriteManager.UpdateSpriteByInput(horizontalInput, verticalInput);
+            if (!handSpriteManager.gameObject.activeSelf)
+            {
+                handSpriteManager.gameObject.SetActive(true);
+            }
+            handSpriteManager.UpdateSpriteByInput(horizontalInput, verticalInput);
         }
 
     }

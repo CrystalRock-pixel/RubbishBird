@@ -47,7 +47,7 @@ public class DialogManager : MonoBehaviour
         )
     {
         // 1. 实例化对话框
-        GameObject bubbleGO = Instantiate(bubblePrefab, master);
+        GameObject bubbleGO = Instantiate(bubblePrefab, master, false);
         // 2. 设置起始状态
         bubbleGO.transform.position = master.position+offset;
         // 3. 启动动画协程
@@ -78,7 +78,7 @@ public class DialogManager : MonoBehaviour
         )
     {
         // 1. 实例化对话框
-        GameObject dialogGO = Instantiate(dialogPrefab, parentCanvas);
+        GameObject dialogGO = Instantiate(dialogPrefab, parentCanvas,false);
 
         // 2. 设置起始状态
         dialogGO.transform.position = startPosition;

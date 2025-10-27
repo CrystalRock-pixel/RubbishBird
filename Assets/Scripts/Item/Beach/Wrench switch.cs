@@ -11,8 +11,9 @@ public class WrenchSwitch : MonoBehaviour, IInteractive
     private Player player => Player.Instance;
     public GameObject towerLight;
 
-    private PowerDistributionBox powerBox;
+    public PowerDistributionBox powerBox;
     private bool PowerBoxFixed = false;
+    public bool forceBoxFixed = false;
 
     private bool playLevelThreeVideo = true;
 
@@ -51,7 +52,7 @@ public class WrenchSwitch : MonoBehaviour, IInteractive
         else
         {
             PowerBoxFixed = powerBox.isFixed;
-            if (PowerBoxFixed == false)
+            if (!forceBoxFixed && PowerBoxFixed == false)
             {
                 DialogManager.Instance.ShowDialog("开关是修好了  可是电从哪来", transform.position, new Vector3(0, 2.5f, 0), this.transform);
                 return false;

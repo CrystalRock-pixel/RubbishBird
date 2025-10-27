@@ -6,6 +6,7 @@ public class PickedItem : MonoBehaviour, IInteractive
 {
     protected Player player = Player.Instance;
     public bool Disposable { get; set; } = false;
+    Quaternion oriRatation;
     Transform IInteractive.instance
     {
         get { return this.transform; }
@@ -15,6 +16,7 @@ public class PickedItem : MonoBehaviour, IInteractive
     protected virtual void Start()
     {
         player = Player.Instance;
+        oriRatation = transform.rotation;
     }
     public virtual bool Interact()
     {
@@ -23,6 +25,7 @@ public class PickedItem : MonoBehaviour, IInteractive
         {
             LosePhysic();
             transform.position = player.transform.GetChild(0).position;
+            transform.rotation = oriRatation;
             transform.SetParent(player.transform.GetChild(0));
             return true;
         }
