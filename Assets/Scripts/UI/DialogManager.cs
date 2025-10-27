@@ -5,8 +5,10 @@ using UnityEngine;
 public class DialogManager : MonoBehaviour
 {
     public GameObject dialogPrefab;
+    public GameObject speechBubblePrefab;
     private static DialogManager instance;
     public Transform UICanvas;
+    public Vector3 bubblePlayerOffset;
     public static DialogManager Instance
     {
         get { return instance; }
@@ -21,6 +23,7 @@ public class DialogManager : MonoBehaviour
     private void Start()
     {
         dialogPrefab=Resources.Load<GameObject>("Prefabs/UI/Test/Dialog");
+        speechBubblePrefab= Resources.Load<GameObject>("Prefabs/UI/Test/Bubble");
     }
 
     public void ShowDialog(string message,Vector3 startPosition,Vector3 posOffset,Transform master)
@@ -28,6 +31,28 @@ public class DialogManager : MonoBehaviour
         GameObject dialogInstance = ShowDialogWithAnimation(dialogPrefab, UICanvas, startPosition, posOffset, 0.5f,new Vector3(0.1f,0.1f,0.1f),Vector3.one,master);
         TextDialog textDialog = dialogInstance.GetComponent<TextDialog>();
         textDialog.SetText(message);
+    }
+
+    public void ShowBubble(Sprite sprite,Transform startPosition,Vector3 posOffset)
+    {
+        GameObject bubbleInstance = ShowBubbleWithAnimation(speechBubblePrefab,startPosition,posOffset,2f);
+        bubbleInstance.GetComponent<Speechbubble>().SetSprite(sprite);
+    }
+
+    private GameObject ShowBubbleWithAnimation(
+        GameObject bubblePrefab,
+        Transform master,
+        Vector3 offset,
+        float duration
+        )
+    {
+        // 1. 实例化对话框
+        GameObject bubbleGO = Instantiate(bubblePrefab, master);
+        // 2. 设置起始状态
+        bubbleGO.transform.position = master.position+offset;
+        // 3. 启动动画协程
+        StartCoroutine(PlayAnimBubble(bubbleGO,0f, duration));
+        return bubbleGO;
     }
 
     /// <summary>
@@ -62,7 +87,7 @@ public class DialogManager : MonoBehaviour
         Vector3 targetPosition = startPosition + offset;
 
         // 3. 启动动画协程
-        StartCoroutine(PlayAnim(master,dialogGO, offset, dialogGO.transform, targetPosition, duration, targetScale));
+        StartCoroutine(PlayAnimDialog(master,dialogGO, offset, dialogGO.transform, targetPosition, duration, targetScale));
 
         return dialogGO;
     }
@@ -70,12 +95,20 @@ public class DialogManager : MonoBehaviour
     ///<summary>
     ///播放动画，并设置FollowUI
     /// </summary>
-    private IEnumerator PlayAnim(Transform master,GameObject UI,Vector3 offset, Transform dialogTransform, Vector3 targetPosition, float duration, Vector3 targetScale)
+    private IEnumerator PlayAnimDialog(Transform master,GameObject UI,Vector3 offset, Transform dialogTransform, Vector3 targetPosition, float duration, Vector3 targetScale)
     {
         yield return StartCoroutine(AnimateDialog(dialogTransform, targetPosition, duration, targetScale));
 
         FollowUI FU = UI.GetComponent<FollowUI>();
         FU.Init(master, offset);
+    }
+
+    private IEnumerator PlayAnimBubble(GameObject bubbleGo, float startAlpha, float duration)
+    {
+        yield return StartCoroutine(AnimateBubble(bubbleGo, startAlpha, duration));
+
+        yield return new WaitForSeconds(3f);
+        Destroy(bubbleGo);
     }
 
 
@@ -113,5 +146,20 @@ public class DialogManager : MonoBehaviour
         // 确保动画结束时对象正好位于目标位置和缩放
         dialogTransform.position = targetPosition;
         dialogTransform.localScale = targetScale;
+    }
+
+    private IEnumerator AnimateBubble(GameObject bubbleGo,float startAlpha,float duration)
+    {
+        float elapsedTime = 0f;
+        Speechbubble bubble = bubbleGo.GetComponent<Speechbubble>();
+        bubble.SetAlpha(startAlpha);
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            float smoothT = t;
+            bubble.SetAlpha(Mathf.Lerp(startAlpha, 1f, smoothT));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
     }
 }

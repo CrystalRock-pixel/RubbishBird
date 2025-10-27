@@ -24,6 +24,7 @@ public class InteractiveHandler:MonoBehaviour
     public bool canInteracting=false;
 
     public GameObject outlineObject;
+    public Sprite sprite;
     private void Start()
     {
         trigger = GetComponent<BoxCollider>();
@@ -43,6 +44,17 @@ public class InteractiveHandler:MonoBehaviour
             if (outlineObject != null)
             {
                 outlineObject.SetActive(true);
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(intercatObjectTag))
+        {
+            if (outlineObject != null)
+            {
+                DialogManager.Instance.ShowBubble(sprite, other.transform,DialogManager.Instance.bubblePlayerOffset);
             }
         }
     }

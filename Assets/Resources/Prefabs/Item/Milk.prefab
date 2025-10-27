@@ -835,6 +835,7 @@ MonoBehaviour:
   intercatObjectTag: Player
   canInteracting: 0
   outlineObject: {fileID: 8170581552976022992}
+  sprite: {fileID: 21300000, guid: a5964222ae1437940a71826f6677a9ce, type: 3}
 --- !u!114 &2488755673102023312
 MonoBehaviour:
   m_ObjectHideFlags: 0
