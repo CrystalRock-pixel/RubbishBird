@@ -34,6 +34,8 @@ public class LevelManager : MonoBehaviour
     public GameObject trueCoffeeLab;
     public GameObject fakeCoffeeLab;
 
+    public GameObject lightTower;
+
     public Transform level2Point;
 
     private void Awake()
@@ -52,6 +54,7 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         player = Player.Instance;
+        lightTower.SetActive(false);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -80,6 +83,7 @@ public class LevelManager : MonoBehaviour
               "°´¿Õ¸ñ¼üÌøÔ¾",
               "Ä¿±ê:  ÀûÓÃ¸ÕÄÃµ½µÄ½Å£¬·µ»Ø¿§·È¹İĞŞ¸´bug \n ×ó¼ü:  ×Ä \n ÓÒ¼ü:  Ãù½Ğ \n E¼ü:  °ÎÒ»¸ùÓğÃ«"
           );
+        lightTower.SetActive(true);
         VideoManager.Instance.PlayVideoClip(VideoManager.Instance.findFeet, args);
     }
 

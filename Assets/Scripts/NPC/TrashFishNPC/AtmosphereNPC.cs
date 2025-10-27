@@ -288,6 +288,7 @@ public class AtmosphereNPC : MonoBehaviour
     public float escapeSpeed = 3f;
     private bool isEscaping = false;
     public bool isEscapeNPC = false;
+    private bool haveDropedItem = false;
 
     [Header("自由走动参数")]
     public float wanderSpeed = 1.0f;
@@ -308,6 +309,7 @@ public class AtmosphereNPC : MonoBehaviour
 
     private void Start()
     {
+        haveDropedItem = false;
         if (AtmosphereManager.Instance != null)
         {
             AtmosphereManager.Instance.RegisterNPC(this);
@@ -491,8 +493,11 @@ public class AtmosphereNPC : MonoBehaviour
 
     private void DropItem()
     {
-        if (dropItemPrefab != null)
-            Instantiate(dropItemPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity);
+        if (dropItemPrefab != null && !haveDropedItem)
+        {
+            Instantiate(dropItemPrefab, transform.position + Vector3.up * 0.5f, dropItemPrefab.transform.rotation);
+            haveDropedItem = true;
+        }
     }
 
     public void Recover()

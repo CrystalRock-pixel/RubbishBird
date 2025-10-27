@@ -19,13 +19,24 @@ public class PrintingHand : MonoBehaviour, IInteractive
         IInteractive interactive= player.GetCurrentInteractiveItem();
         if (interactive != null)
         {
-            DialogManager.Instance.ShowDialog("嘴里叼着东西可修不了bug", transform.position, new Vector3(0, 2.5f, 0), this.transform);
-            return false;
+            string name = interactive.instance.name;
+            if (name.Contains("DataCoffee"))
+            {
+                DialogManager.Instance.ShowDialog("数据流拿铁神奇的修复了bug", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                hand.SetActive(false);
+                player.haveHand = true;
+                return true;
+            }
+            else
+            {
+                DialogManager.Instance.ShowDialog("这个可修不了bug", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                return false;
+            }
         }
         else
         {
-            hand.SetActive(false);
-            return true;
+            DialogManager.Instance.ShowDialog("诡异的名画  诡异的手", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+            return false;
         }
     }
 

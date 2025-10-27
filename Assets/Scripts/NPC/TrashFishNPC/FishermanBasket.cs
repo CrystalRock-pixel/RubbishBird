@@ -77,7 +77,7 @@ public class FishermanBasket : MonoBehaviour,IInteractive
             Vector3 basePosition = transform.position + Vector3.up * 0.2f;
             Vector3 spawnPosition = basePosition + randomOffset;
 
-            GameObject spawnedObject = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+            GameObject spawnedObject = Instantiate(prefabToSpawn, spawnPosition, prefabToSpawn.transform.rotation);
 
             
             if (spawnedObject.TryGetComponent<Rigidbody>(out Rigidbody rb))

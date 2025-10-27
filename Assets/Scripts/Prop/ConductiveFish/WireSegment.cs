@@ -34,15 +34,28 @@ public class WireSegment : CircuitComponent
         ConnectionManager.Instance?.RefreshComponents();
     }
 
-    
+    private void Update()
+    {
+        string name="";
+        if (neighbors.Count > 0)
+        {
+            foreach (var neighbor in neighbors)
+            {
+                name += neighbor.transform.name + ",";
+            }
+            Debug.Log(transform.name + "邻居" + name);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
        
         WireSegment otherWire = other.GetComponent<WireSegment>();
-        if (otherWire != null)
+        //if (otherWire != null)
+        if(other.CompareTag("Interactive"))
         {
             // 建立连接：将对方添加到邻居列表
+            Debug.Log(transform.name + "与" + other.name + "建立连接");
             neighbors.Add(otherWire);
             otherWire.neighbors.Add(this); // 建立双向连接
 
