@@ -6,12 +6,12 @@ using UnityEngine;
 
 public interface IInteractive
 {
-    // µ±Íæ¼Ò°´ÏÂ E ¼üÊ±Ö´ÐÐµÄÊµ¼ÊÂß¼­
+    // ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ï¿½ï¿½ E ï¿½ï¿½Ê±Ö´ï¿½Ðµï¿½Êµï¿½ï¿½ï¿½ß¼ï¿½
     Transform instance { get; set; }
-    bool Interact();//·µ»ØÊÇ·ñ³É¹¦½»»¥
+    bool Interact();//ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½
     void InteractEnd();
 
-    bool Disposable { get;set; }  //ÊÇ·ñÒ»´ÎÐÔ½»»¥£¬Ò»´ÎÐÔ½»»¥¼´Ò»´Î½»»¥±ã½»»¥Íê³É
+    bool Disposable { get;set; }  //ï¿½Ç·ï¿½Ò»ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Î½ï¿½ï¿½ï¿½ï¿½ã½»ï¿½ï¿½ï¿½ï¿½ï¿½
     int Weight
     {
         get => 1;
@@ -52,7 +52,7 @@ public class InteractiveHandler:MonoBehaviour
     {
         if (other.CompareTag(interactObjectTag))
         {
-            if (outlineObject != null)
+            if (sprite != null)
             {
                 DialogManager.Instance.ShowBubble(sprite, other.transform,DialogManager.Instance.bubblePlayerOffset);
             }
