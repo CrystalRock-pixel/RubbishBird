@@ -81,14 +81,18 @@ public class PowerDistributionBox : MonoBehaviour
         }
     }
 
-    
+
     private void CheckStatus()
     {
         if (connectionManager == null) return;
 
-        
+
         bool isConnected = connectionManager.CheckConnectivity();
 
+        if (isConnected && !isFixed)
+        {
+            DialogManager.Instance.ShowDialog("配电箱已修复，电路恢复连通。", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+        }
         isFixed = isConnected;
 
         if (isConnected)
@@ -134,8 +138,6 @@ public class PowerDistributionBox : MonoBehaviour
         // 播放音频
         audioSource.PlayOneShot(currentSoundClip);
         Debug.Log("PowerDistributionBox: 播放电流声音频。", this);
-
-        DialogManager.Instance.ShowDialog("电路连接完成", transform.position, new Vector3(0, 2.5f, 0), this.transform);
 
         // 等待音频播放完毕
         yield return new WaitForSeconds(currentSoundClip.length);

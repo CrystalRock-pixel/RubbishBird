@@ -34,19 +34,6 @@ public class WireSegment : CircuitComponent
         ConnectionManager.Instance?.RefreshComponents();
     }
 
-    private void Update()
-    {
-        string name="";
-        if (neighbors.Count > 0)
-        {
-            foreach (var neighbor in neighbors)
-            {
-                name += neighbor.transform.name + ",";
-            }
-            Debug.Log(transform.name + "аз╬с" + name);
-        }
-    }
-
     private void OnTriggerEnter(Collider other)
     {
        
