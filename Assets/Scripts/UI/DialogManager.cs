@@ -35,7 +35,7 @@ public class DialogManager : MonoBehaviour
 
     public void ShowBubble(Sprite sprite,Transform startPosition,Vector3 posOffset)
     {
-        GameObject bubbleInstance = ShowBubbleWithAnimation(speechBubblePrefab,startPosition,posOffset,2f);
+        GameObject bubbleInstance = ShowBubbleWithAnimation(speechBubblePrefab,startPosition,posOffset,1f);
         bubbleInstance.GetComponent<Speechbubble>().SetSprite(sprite);
     }
 
@@ -46,26 +46,26 @@ public class DialogManager : MonoBehaviour
         float duration
         )
     {
-        // 1. ÊµÀý»¯¶Ô»°¿ò
-        GameObject bubbleGO = Instantiate(bubblePrefab, master, false);
-        // 2. ÉèÖÃÆðÊ¼×´Ì¬
+        // 1. Êµï¿½ï¿½ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½
+        GameObject bubbleGO = Instantiate(bubblePrefab, master);
+        // 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼×´Ì¬
         bubbleGO.transform.position = master.position+offset;
-        // 3. Æô¶¯¶¯»­Ð­³Ì
+        // 3. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½
         StartCoroutine(PlayAnimBubble(bubbleGO,0f, duration));
         return bubbleGO;
     }
 
     /// <summary>
-    /// Éú³É¶Ô»°¿ò²¢²¥·ÅÒÆ¶¯ºÍ·Å´óµÄ¶¯»­
+    /// ï¿½ï¿½ï¿½É¶Ô»ï¿½ï¿½ò²¢²ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Í·Å´ï¿½Ä¶ï¿½ï¿½ï¿½
     /// </summary>
-    /// <param name="dialogPrefab">¶Ô»°¿òµÄ RectTransform Ô¤ÖÆ¼þ</param>
-    /// <param name="parentCanvas">¶Ô»°¿ò½«Òª·ÅÖÃµÄ¸¸¼¶ Canvas</param>
-    /// <param name="startPosition">¶Ô»°¿òµÄÆðÊ¼Î»ÖÃ£¨ÊÀ½ç×ø±ê»ò Canvas ¾Ö²¿×ø±ê£¬È¡¾öÓÚ¸¸¼¶ÉèÖÃ£©</param>
-    /// <param name="offset">Ïà¶ÔÓÚÆðÊ¼Î»ÖÃµÄÆ«ÒÆÁ¿£¨¶¯»­½áÊøÊ±µÄÎ»ÖÃ = startPosition + offset£©</param>
-    /// <param name="duration">¶¯»­³ÖÐøÊ±¼ä£¨Ãë£©</param>
-    /// <param name="startScale">ÆðÊ¼Ëõ·ÅÖµ£¨Í¨³£Îª Vector3.zero »òÒ»¸öºÜÐ¡µÄÖµ£©</param>
-    /// <param name="targetScale">Ä¿±êËõ·ÅÖµ£¨Í¨³£Îª Vector3.one£©</param>
-    /// <returns>ÊµÀý»¯ºóµÄ¶Ô»°¿ò GameObject</returns>
+    /// <param name="dialogPrefab">ï¿½Ô»ï¿½ï¿½ï¿½ï¿½ RectTransform Ô¤ï¿½Æ¼ï¿½</param>
+    /// <param name="parentCanvas">ï¿½Ô»ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ÃµÄ¸ï¿½ï¿½ï¿½ Canvas</param>
+    /// <param name="startPosition">ï¿½Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Î»ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Canvas ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ê£¬È¡ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½</param>
+    /// <param name="offset">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Î»ï¿½Ãµï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Î»ï¿½ï¿½ = startPosition + offsetï¿½ï¿½</param>
+    /// <param name="duration">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¨ï¿½ë£©</param>
+    /// <param name="startScale">ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Í¨ï¿½ï¿½Îª Vector3.zero ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½Öµï¿½ï¿½</param>
+    /// <param name="targetScale">Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Í¨ï¿½ï¿½Îª Vector3.oneï¿½ï¿½</param>
+    /// <returns>Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶Ô»ï¿½ï¿½ï¿½ GameObject</returns>
     private GameObject ShowDialogWithAnimation(
         GameObject dialogPrefab,
         Transform parentCanvas,
@@ -77,23 +77,23 @@ public class DialogManager : MonoBehaviour
         Transform master
         )
     {
-        // 1. ÊµÀý»¯¶Ô»°¿ò
-        GameObject dialogGO = Instantiate(dialogPrefab, parentCanvas,false);
+        // 1. Êµï¿½ï¿½ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½
+        GameObject dialogGO = Instantiate(dialogPrefab, parentCanvas);
 
-        // 2. ÉèÖÃÆðÊ¼×´Ì¬
+        // 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼×´Ì¬
         dialogGO.transform.position = startPosition;
         dialogGO.transform.localScale = startScale;
 
         Vector3 targetPosition = startPosition + offset;
 
-        // 3. Æô¶¯¶¯»­Ð­³Ì
+        // 3. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½
         StartCoroutine(PlayAnimDialog(master,dialogGO, offset, dialogGO.transform, targetPosition, duration, targetScale));
 
         return dialogGO;
     }
 
     ///<summary>
-    ///²¥·Å¶¯»­£¬²¢ÉèÖÃFollowUI
+    ///ï¿½ï¿½ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½FollowUI
     /// </summary>
     private IEnumerator PlayAnimDialog(Transform master,GameObject UI,Vector3 offset, Transform dialogTransform, Vector3 targetPosition, float duration, Vector3 targetScale)
     {
@@ -107,43 +107,43 @@ public class DialogManager : MonoBehaviour
     {
         yield return StartCoroutine(AnimateBubble(bubbleGo, startAlpha, duration));
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         Destroy(bubbleGo);
     }
 
 
     /// <summary>
-    /// ¶¯»­Ð­³Ì£ºÍ¬Ê±´¦ÀíÎ»ÖÃÒÆ¶¯ºÍËõ·Å
+    /// ï¿½ï¿½ï¿½ï¿½Ð­ï¿½Ì£ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     private IEnumerator AnimateDialog(Transform dialogTransform, Vector3 targetPosition, float duration, Vector3 targetScale)
     {
         float elapsedTime = 0f;
-        Vector3 startPosition = dialogTransform.position; // Ê¹ÓÃ transform.position
+        Vector3 startPosition = dialogTransform.position; // Ê¹ï¿½ï¿½ transform.position
         Vector3 startScale = dialogTransform.localScale;
 
         while (elapsedTime < duration)
         {
-            // ¼ÆËã¶¯»­½ø¶È°Ù·Ö±È (0 µ½ 1)
+            // ï¿½ï¿½ï¿½ã¶¯ï¿½ï¿½ï¿½ï¿½ï¿½È°Ù·Ö±ï¿½ (0 ï¿½ï¿½ 1)
             float t = elapsedTime / duration;
 
-            // ¿ÉÒÔÊ¹ÓÃ Mathf.SmoothStep(0f, 1f, t) À´´´½¨¸üÆ½»¬µÄ¶¯»­Ð§¹û
+            // ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ Mathf.SmoothStep(0f, 1f, t) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
             // float smoothT = Mathf.SmoothStep(0f, 1f, t);
             float smoothT = t;
 
-            // Î»ÖÃ²åÖµ£º´ÓÆðÊ¼Î»ÖÃÒÆ¶¯µ½Ä¿±êÎ»ÖÃ
-            dialogTransform.position = Vector3.Lerp(startPosition, targetPosition, smoothT); // ²Ù×÷ position
+            // Î»ï¿½Ã²ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Î»ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Î»ï¿½ï¿½
+            dialogTransform.position = Vector3.Lerp(startPosition, targetPosition, smoothT); // ï¿½ï¿½ï¿½ï¿½ position
 
-            // Ëõ·Å²åÖµ£º´ÓÆðÊ¼Ëõ·ÅÖµ·Å´óµ½Ä¿±êËõ·ÅÖµ
-            dialogTransform.localScale = Vector3.Lerp(startScale, targetScale, smoothT); // ²Ù×÷ localScale
+            // ï¿½ï¿½ï¿½Å²ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Öµï¿½Å´ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+            dialogTransform.localScale = Vector3.Lerp(startScale, targetScale, smoothT); // ï¿½ï¿½ï¿½ï¿½ localScale
 
-            // Ôö¼Ó¾­¹ýµÄÊ±¼ä
+            // ï¿½ï¿½ï¿½Ó¾ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
             elapsedTime += Time.deltaTime;
 
-            // µÈ´ýÏÂÒ»Ö¡
+            // ï¿½È´ï¿½ï¿½ï¿½Ò»Ö¡
             yield return null;
         }
 
-        // È·±£¶¯»­½áÊøÊ±¶ÔÏóÕýºÃÎ»ÓÚÄ¿±êÎ»ÖÃºÍËõ·Å
+        // È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ä¿ï¿½ï¿½Î»ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½
         dialogTransform.position = targetPosition;
         dialogTransform.localScale = targetScale;
     }
