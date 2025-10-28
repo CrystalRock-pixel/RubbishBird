@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 401284776410503833}
   serializedVersion: 2
   m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
-  m_LocalPosition: {x: 1.3999999, y: 21.65786, z: -0.16278298}
+  m_LocalPosition: {x: 1.3999999, y: 22.85, z: -3.43}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -54,7 +54,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: caf489f23fec6454d9e215b76958a887, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -825617261
-  m_SortingLayer: 3
+  m_SortingLayerID: -1868708919
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 733ac10cdb5b2344a89ececd03b058f8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -235,7 +235,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -825617261
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &7911079591033454229
 MonoBehaviour:

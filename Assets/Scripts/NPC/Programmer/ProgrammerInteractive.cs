@@ -20,30 +20,16 @@ public class ProgrammerInteractive : MonoBehaviour, IInteractive
     }
     public bool Interact()
     {
-        //IInteractive interactive = player.GetCurrentInteractiveItem();
-        //if (interactive != null)
-        //{
-        //    if (interactive.instance.name == "CoffeeCup(Clone)")
-        //    {
-        //        player.OverInteractive();
-        //        //Debug.Log("哦！谢谢你的咖啡");
-        //        DialogManager.Instance.ShowDialog("哪来的咖啡", transform.position, dialogOffset, this.transform);
-        //        Destroy(interactive.instance.gameObject);
-        //        StartCoroutine(DrinkCoffeeAndThenGoToToilet());
-        //        return true;
-        //    }
-        //    else if (interactive.instance.name == "CoffeeBean")
-        //    {
-        //        DialogManager.Instance.ShowDialog("我不是蘑菇=(", transform.position, dialogOffset, this.transform);
-        //    }
-        //    else if(interactive.instance.name == "CelesteStrawberry")
-        //    {
-        //        DialogManager.Instance.ShowDialog("这只有一个草莓  不够加一条命", transform.position, dialogOffset, this.transform);
-        //    }
-        //    return false;
-        //}
-        //else
-        //{
+        IInteractive interactive = player.GetCurrentInteractiveItem();
+        if (interactive != null&& interactive.instance.name=="DataCoffee(Clone)")
+        {
+            DialogManager.Instance.ShowDialog("咖啡馆内似乎发生了某些变化", transform.position, dialogOffset, this.transform);
+            PaintingHand.Instance.SetCanInteractive();
+            Destroy(interactive.instance.gameObject);
+            return true;
+        }
+        else
+        {
             float value=Random.Range(0f, 1f);
             if (value < 0.5f)
             {
@@ -62,7 +48,7 @@ public class ProgrammerInteractive : MonoBehaviour, IInteractive
                 DialogManager.Instance.ShowDialog("超级黑客 不是超级嗨客", transform.position, dialogOffset, this.transform);
             }
             return false;
-        //}
+        }
     }
 
     public IEnumerator DrinkCoffeeAndThenGoToToilet()

@@ -333,6 +333,11 @@ public class Player : MonoBehaviour
         StartCoroutine(InstantiateFeatherAfterDelay(delayTime));
     }
 
+    public void SetPosition(Vector3 position)
+    {
+        transform.position = position;
+    }
+
     // 可视化范围（仅在编辑器中）
     private void OnDrawGizmosSelected()
     {
