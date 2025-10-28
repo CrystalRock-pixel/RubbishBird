@@ -55,6 +55,7 @@ public class LevelManager : MonoBehaviour
     {
         player = Player.Instance;
         lightTower.SetActive(false);
+        type=LevelType.Coffee;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -71,8 +72,15 @@ public class LevelManager : MonoBehaviour
             fakeCoffeeLab.SetActive(true);
 
             player.transform.position = level2Point.position;
+            type = LevelType.Beach;
 
             VideoManager.Instance.PlayVideoClip(VideoManager.Instance.electricity,args);
+        }
+        else if(other.CompareTag("Player") && type == LevelType.Three)
+        {
+            player.SetPosition(level2Point.position);
+            trueCoffeeLab.SetActive(false);
+            fakeCoffeeLab.SetActive(true);
         }
     }
 
@@ -84,6 +92,7 @@ public class LevelManager : MonoBehaviour
               "Ä¿±ê:  ÀûÓÃ¸ÕÄÃµ½µÄ½Å£¬·µ»Ø¿§·È¹ÝÐÞ¸´bug \n ×ó¼ü:  ×Ä \n ÓÒ¼ü:  Ãù½Ð \n E¼ü:  °ÎÒ»¸ùÓðÃ«"
           );
         lightTower.SetActive(true);
+        type = LevelType.Three;
         VideoManager.Instance.PlayVideoClip(VideoManager.Instance.findFeet, args);
     }
 
