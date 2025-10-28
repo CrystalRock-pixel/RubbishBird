@@ -227,6 +227,7 @@ using System.Linq;
 public class AtmosphereManager : MonoBehaviour
 {
     public static AtmosphereManager Instance { get; private set; }
+    public BoxCollider trigger;
 
     [Header("全局控制变量 (外部驱动)")]
     [SerializeField] private bool globalAngerTrigger = false;

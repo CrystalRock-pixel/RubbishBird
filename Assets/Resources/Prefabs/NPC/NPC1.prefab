@@ -80,9 +80,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8760c85ce4fe9ec4c950eed6d8683765, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intercatObjectTag: Player
+  interactObjectTag: 
   canInteracting: 0
   outlineObject: {fileID: 8356860033384112323}
+  sprite: {fileID: 0}
 --- !u!114 &3280851781366573122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,8 +134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ecd375521a33140b4fe9ab448f62e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelTransform: {fileID: 6815111506899517270}
-  dropItemPrefab: {fileID: 1513524581168885566, guid: b8336d2bd9009af4dafcb80357ace995,
+  modelTransform: {fileID: 3082829466856511764}
+  dropItemPrefab: {fileID: 879812173918262870, guid: 4918945be63f6ba4e86f64bff0407824,
     type: 3}
   dropsItem: 1
   recoverTime: 2
@@ -142,6 +143,7 @@ MonoBehaviour:
   shakeIntensity: 0.2
   shakeSpeed: 50
   escapeSpeed: 3
+  isEscapeNPC: 0
   wanderSpeed: 1
   wanderChangeTime: 3
 --- !u!1 &4897125653494056575
@@ -186,7 +188,7 @@ SpriteRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4897125653494056575}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MainCamara : MonoBehaviour
 {
@@ -39,11 +40,15 @@ public class MainCamara : MonoBehaviour
     {
         Vector3 desiredPosition = target.position + offset;
         // 使用 Lerp 函数进行平滑插值
-        float t=Time.deltaTime * smoothSpeed;
+        float t = Time.deltaTime * smoothSpeed;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, t);
         transform.position = smoothedPosition;
     }
 
+    public void SetPosition(Vector3 point)
+    {
+        transform.position = point+offset;
+    }
     void ControlRotation()
     {
     }

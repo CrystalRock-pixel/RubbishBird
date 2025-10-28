@@ -22,9 +22,10 @@ public class PlayerHitState : PlayerStateBase
         _kickbackVelocity = hitDirection.normalized * hitForce;
         rb.velocity += _kickbackVelocity;
 
-        if (player.currentInteractiveItem != null)
+        IInteractive interactive=player.GetCurrentInteractiveItem();
+        if (interactive != null)
         {
-            player.currentInteractiveItem.InteractEnd();
+            interactive.InteractEnd();
             player.OverInteractive();
         }
     }

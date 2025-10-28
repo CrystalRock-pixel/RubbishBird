@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - NPCTrigger
   - ShaoJiaoYuMao
+  - PersonsRange
   layers:
   - Default
   - TransparentFX

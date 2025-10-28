@@ -30,6 +30,11 @@ public class ProgrammerInteractive : MonoBehaviour, IInteractive
         }
         else
         {
+            if (player.haveHand)
+            {
+                LevelManager.instance.LevelPass();
+                return false;
+            }
             float value=Random.Range(0f, 1f);
             if (value < 0.5f)
             {

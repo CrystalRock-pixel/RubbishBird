@@ -52,7 +52,6 @@ public class PaintingHand : MonoBehaviour, IInteractive
         if (interactive == null && canInteractive)
         {
             DialogManager.Instance.ShowDialog("数据流拿铁神奇的修复了bug", transform.position, dialogOffset, this.transform);
-            Destroy(interactive.instance.gameObject);
             hand.SetActive(false);
             player.haveHand = true;
             return true;
