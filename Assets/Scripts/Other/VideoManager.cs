@@ -137,12 +137,14 @@ public class VideoManager : MonoBehaviour
         if (!source.isLooping)
         {
             // 停止 VideoPlayer 播放，但不要隐藏画面 (RawImage)
-            // 也不要恢复游戏时间 (Time.timeScale 仍为 0)
             source.Stop();
-
-            Debug.Log("视频播放完毕。等待用户交互...");
-
-            // 触发事件，通知外部脚本 (例如 UI 管理器) 显示“继续”按钮
+    
+            Debug.Log("VideoManager: OnVideoFinishedHandler called, triggering OnVideoHeld event");
+            
+            // 检查是否有事件监听器
+            Debug.Log("VideoManager: OnVideoHeld event listeners count: " + (OnVideoHeld != null ? "at least 1" : "0"));
+            
+            // 触发事件
             OnVideoHeld?.Invoke();
         }
     }

@@ -15,7 +15,7 @@ public class TutorialManager : MonoBehaviour
     public GameObject tabMenuPanel;     // TAB 菜单面板 (3.1)
     public TextMeshProUGUI wasdPromptText; // WASD 提示文本 (3.2)
     public float initialDelay = 3f; // 初始停留时间
-    public float fadeOutDuration = 0.5f; // 渐隐持续时间
+    public float fadeOutDuration = 0.4f; // 渐隐持续时间
     public float moveDuration = 1.0f; // 移动到左上角的时间
 
     public GameObject nextButton; // 用于播放完动画后的下一步
@@ -61,7 +61,8 @@ public class TutorialManager : MonoBehaviour
             tabUIPosition = goalText.rectTransform.parent.InverseTransformPoint(worldPos);
 
             // 稍微偏移一下，让文字看起来是飞到UI旁边而不是中心点
-            tabUIPosition += new Vector3(goalText.rectTransform.rect.width / 2, 0, 0);
+            // 修改：增加y轴偏移，让文字飞的终点更靠上
+            tabUIPosition += new Vector3(goalText.rectTransform.rect.width / 2, 55f, 0); // 50f可以根据需要调整
         }
 
         //// 启动引导流程的第一个步骤
@@ -79,15 +80,72 @@ public class TutorialManager : MonoBehaviour
         {
             if (tabMenuPanel.activeSelf)
             {
-                // 隐藏 TAB 菜单
-                tabMenuPanel.SetActive(false);
+                // 原来是直接隐藏，现在改为启动渐隐动画协程
+                StartCoroutine(FadeOutTabMenu());
             }
             else
             {
                 // 显示 TAB 菜单
                 tabMenuPanel.SetActive(true);
+                // 确保开始时是完全不透明的
+                SetPanelOpacity(tabMenuPanel, 1f);
+                
+                // 可选：启动自动渐隐计时器
+                StartCoroutine(AutoHideTabMenu());
             }
         }
+    }
+    
+    // 新增：Tab菜单渐隐动画协程
+    private IEnumerator FadeOutTabMenu()
+    {
+        float fadeDuration = 0.4f; // 渐隐持续时间，可根据需要调整
+        float timer = 0f;
+        
+        // 记录开始时的透明度（假设是完全不透明）
+        float startOpacity = 1f;
+        
+        while (timer < fadeDuration)
+        {
+            timer += Time.deltaTime;
+            float normalizedTime = timer / fadeDuration;
+            float currentOpacity = Mathf.Lerp(startOpacity, 0f, normalizedTime);
+            
+            // 设置面板透明度
+            SetPanelOpacity(tabMenuPanel, currentOpacity);
+            
+            yield return null;
+        }
+        
+        // 确保最终状态
+        tabMenuPanel.SetActive(false);
+        // 重置透明度，以便下次显示时是完全不透明的
+        SetPanelOpacity(tabMenuPanel, 1f);
+    }
+    
+    // 新增：自动隐藏Tab菜单的协程（可选功能）
+    private IEnumerator AutoHideTabMenu()
+    {
+        float autoHideDelay = 3f; // 显示多长时间后自动开始渐隐，可根据需要调整
+        yield return new WaitForSeconds(autoHideDelay);
+        
+        // 确保在开始渐隐前菜单仍然是激活的
+        if (tabMenuPanel.activeSelf)
+        {
+            StartCoroutine(FadeOutTabMenu());
+        }
+    }
+    
+    // 新增：设置UI面板及其所有子元素透明度的辅助方法
+    private void SetPanelOpacity(GameObject panel, float opacity)
+    {
+        // 设置面板自身的透明度
+        CanvasGroup canvasGroup = panel.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = panel.AddComponent<CanvasGroup>();
+        }
+        canvasGroup.alpha = opacity;
     }
 
     void ActiveNextButton()
@@ -98,6 +156,28 @@ public class TutorialManager : MonoBehaviour
     {
         nextButton.SetActive(false);
     }
+
+    // 新增：处理nextButton点击事件
+    // public void OnNextButtonClick()
+    // {
+    //     // 立即将按钮透明度设为0
+    //     CanvasGroup canvasGroup = nextButton.GetComponent<CanvasGroup>();
+    //     if (canvasGroup == null)
+    //     {
+    //         canvasGroup = nextButton.AddComponent<CanvasGroup>();
+    //     }
+    //     canvasGroup.alpha = 0f;
+        
+    //     // 启动协程，延迟1秒后失活按钮
+    //     StartCoroutine(DeactivateButtonAfterDelay(1f));
+    // }
+
+    // // 新增：延迟失活按钮的协程
+    // private IEnumerator DeactivateButtonAfterDelay(float delay)
+    // {
+    //     yield return new WaitForSeconds(delay);
+    //     nextButton.SetActive(false);
+    // }
 
     public void StartPrompt()
     {
