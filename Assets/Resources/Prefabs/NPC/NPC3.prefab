@@ -80,9 +80,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8760c85ce4fe9ec4c950eed6d8683765, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intercatObjectTag: Player
+  interactObjectTag: 
   canInteracting: 0
   outlineObject: {fileID: 6544172700056568104}
+  sprite: {fileID: 0}
 --- !u!114 &747261428280349261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +143,7 @@ MonoBehaviour:
   shakeIntensity: 0.2
   shakeSpeed: 50
   escapeSpeed: 3
+  isEscapeNPC: 1
   wanderSpeed: 1
   wanderChangeTime: 3
 --- !u!1 &6526098154451574147

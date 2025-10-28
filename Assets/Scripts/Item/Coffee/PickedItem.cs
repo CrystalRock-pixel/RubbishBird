@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,7 +39,8 @@ public class PickedItem : MonoBehaviour, IInteractive
 
     protected virtual void LosePhysic()
     {
-        if(transform.GetChild(0).GetComponent<Collider>() != null)   //第一个子物体是碰撞体
+
+        if (transform.childCount >=1 && transform.GetChild(0).GetComponent<Collider>() != null)   //第一个子物体是碰撞体
         {
             transform.GetChild(0).GetComponent<Collider>().enabled = false;
         }
@@ -55,7 +57,7 @@ public class PickedItem : MonoBehaviour, IInteractive
     }
     public virtual void Placed()
     {
-        if (transform.GetChild(0).GetComponent<Collider>() != null)
+        if (transform.childCount>=1&&transform.GetChild(0).GetComponent<Collider>() != null)
         {
             transform.GetChild(0).GetComponent<Collider>().enabled = true;
         }

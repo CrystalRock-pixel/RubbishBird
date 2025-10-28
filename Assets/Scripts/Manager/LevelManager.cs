@@ -35,6 +35,10 @@ public class LevelManager : MonoBehaviour
     public GameObject fakeCoffeeLab;
 
     public GameObject lightTower;
+    public GameObject persons;
+    public GameObject parrot;
+    public GameObject coffeeDoor;
+    public GameObject fakeCoffeeDoor;
 
     public Transform level2Point;
 
@@ -55,7 +59,11 @@ public class LevelManager : MonoBehaviour
     {
         player = Player.Instance;
         lightTower.SetActive(false);
-        type=LevelType.Coffee;
+        persons.SetActive(false);
+        parrot.SetActive(false);
+        coffeeDoor.SetActive(false);
+        fakeCoffeeDoor.SetActive(false);
+        type =LevelType.Coffee;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -68,19 +76,20 @@ public class LevelManager : MonoBehaviour
             );
 
             trueCoffeeLab.transform.position += new Vector3(0, 50, 0);
-            trueCoffeeLab.SetActive(false);
+            //trueCoffeeLab.SetActive(false);
             fakeCoffeeLab.SetActive(true);
+            persons.SetActive(true);
+            parrot.SetActive(true);
 
             player.transform.position = level2Point.position;
+            MainCamara.Instance.SetPosition(player.transform.position);
             type = LevelType.Beach;
 
+            coffeeDoor.SetActive(true);
+            fakeCoffeeDoor.SetActive(true);
+
+
             VideoManager.Instance.PlayVideoClip(VideoManager.Instance.electricity,args);
-        }
-        else if(other.CompareTag("Player") && type == LevelType.Three)
-        {
-            player.SetPosition(level2Point.position);
-            trueCoffeeLab.SetActive(false);
-            fakeCoffeeLab.SetActive(true);
         }
     }
 
@@ -93,7 +102,13 @@ public class LevelManager : MonoBehaviour
           );
         lightTower.SetActive(true);
         type = LevelType.Three;
+
         VideoManager.Instance.PlayVideoClip(VideoManager.Instance.findFeet, args);
     }
+
+     public void LevelPass()
+     {
+        VideoManager.Instance.PlayVideoClip(VideoManager.Instance.end,null);
+     }
 
 }

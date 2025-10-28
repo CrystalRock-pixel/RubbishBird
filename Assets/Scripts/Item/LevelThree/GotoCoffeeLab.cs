@@ -16,7 +16,7 @@ public class GotoCoffeeLab : MonoBehaviour
                 trueCoffeeLab.SetActive(true);
             }
             Player.Instance.SetPosition(coffeeLabPoint.position);
-            this.gameObject.SetActive(false);
+            MainCamara.Instance.SetPosition(coffeeLabPoint.position);
         }
     }
 }

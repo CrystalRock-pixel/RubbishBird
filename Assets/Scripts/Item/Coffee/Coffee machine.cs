@@ -96,7 +96,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
     IEnumerator MakeThing(GameObject prefab)
     {
         yield return new WaitForSeconds(5f);
-        GameObject gameObject = Instantiate(prefab, transform.position, Quaternion.identity);
+        GameObject gameObject = Instantiate(prefab, transform.position, prefab.transform.rotation);
         gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 2f, -4f);
     }
 

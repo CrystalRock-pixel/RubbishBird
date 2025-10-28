@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
     //能力标志
     public bool canJump;
     public bool canFeather;
-
+    private bool inPersonsRange;
 
     private static Player instance;
     public static Player Instance
@@ -189,6 +189,10 @@ public class Player : MonoBehaviour
                 //Debug.Log(interactive + "离开");
             }
         }
+        if (other.CompareTag("PersonsRange"))
+        {
+            inPersonsRange = false;
+        }
         //if (other.CompareTag("Ground"))
         //{
         //    isGrounded = false;
@@ -197,6 +201,10 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag("PersonsRange"))
+        {
+            inPersonsRange = true;
+        }
     }
 
     private void FixedUpdate()
@@ -325,7 +333,10 @@ public class Player : MonoBehaviour
             }
         }
 
-        AtmosphereManager.Instance.GlobalAngerTrigger = true;
+        if (inPersonsRange)
+        {
+            AtmosphereManager.Instance.GlobalAngerTrigger = true;
+        }
     }
 
     public void InstantiateFeather(float delayTime)
