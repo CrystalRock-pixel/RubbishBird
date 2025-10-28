@@ -42,6 +42,8 @@ public class LevelManager : MonoBehaviour
 
     public Transform level2Point;
 
+    private int index = 0;
+
     private void Awake()
     {
         if (instance == null)
@@ -65,34 +67,72 @@ public class LevelManager : MonoBehaviour
         fakeCoffeeDoor.SetActive(false);
         type =LevelType.Coffee;
     }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            if (VideoManager.Instance!=null&&VideoManager.Instance.videoPlayer.isPlaying)
+            {
+                VideoManager.Instance.StopVideo();
+                return;
+            }
+            index++;
+            if (index == 1)
+            {
+                GotoLevelTwo();
+                
+            }
+            else if (index == 2)
+            {
+                GotoLevelThree();
+            }
+            else if (index == 3)
+            {
+                LevelPass();
+            }
+        }
+    }
+
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Player")&&type==LevelType.Coffee)
         {
-            player.canFeather = true;
-            AnimationCompleteEventArgs args=new AnimationCompleteEventArgs(
-                "°´E°ÎÓðÃ«",
-                "Ä¿±ê:  ÐÞ¸´µÆËþ£¬¿ªµÆÑ°ÕÒÏßË÷ \n ×ó¼ü:  ×Ä \n ÓÒ¼ü:  Ãù½Ð \n E¼ü:  °ÎÒ»¸ùÓðÃ«"
-            );
-
-            trueCoffeeLab.transform.position += new Vector3(0, 50, 0);
-            //trueCoffeeLab.SetActive(false);
-            fakeCoffeeLab.SetActive(true);
-            persons.SetActive(true);
-            parrot.SetActive(true);
-
-            player.transform.position = level2Point.position;
-            MainCamara.Instance.SetPosition(player.transform.position);
-            type = LevelType.Beach;
-
-            coffeeDoor.SetActive(true);
-            fakeCoffeeDoor.SetActive(true);
-
-
-            VideoManager.Instance.PlayVideoClip(VideoManager.Instance.electricity,args);
+            GotoLevelTwo();
         }
     }
 
+    private void GotoLevelTwo()
+    {
+        player.canFeather = true;
+        AnimationCompleteEventArgs args = new AnimationCompleteEventArgs(
+            "°´E°ÎÓðÃ«",
+            "Ä¿±ê:  ÐÞ¸´µÆËþ£¬¿ªµÆÑ°ÕÒÏßË÷ \n ×ó¼ü:  ×Ä \n ÓÒ¼ü:  Ãù½Ð \n E¼ü:  °ÎÒ»¸ùÓðÃ«"
+        );
+
+        trueCoffeeLab.transform.position += new Vector3(0, 50, 0);
+        //trueCoffeeLab.SetActive(false);
+        fakeCoffeeLab.SetActive(true);
+        persons.SetActive(true);
+        parrot.SetActive(true);
+
+        player.transform.position = level2Point.position;
+        MainCamara.Instance.SetPosition(player.transform.position);
+        type = LevelType.Beach;
+
+        coffeeDoor.SetActive(true);
+        fakeCoffeeDoor.SetActive(true);
+
+        if(VideoManager.Instance != null && VideoManager.Instance.gameObject.activeSelf)
+        {
+            VideoManager.Instance.PlayVideoClip(VideoManager.Instance.electricity, args);
+        }
+        else
+        {
+            TutorialManager.instance.ConfigureAndStartSimplifiedPrompt(args);
+        }
+    }
     public void GotoLevelThree()
     {
         player.canJump = true;
@@ -103,7 +143,14 @@ public class LevelManager : MonoBehaviour
         lightTower.SetActive(true);
         type = LevelType.Three;
 
-        VideoManager.Instance.PlayVideoClip(VideoManager.Instance.findFeet, args);
+        if (VideoManager.Instance != null && VideoManager.Instance.gameObject.activeSelf)
+        {
+            VideoManager.Instance.PlayVideoClip(VideoManager.Instance.findFeet, args);
+        }
+        else
+        {
+            TutorialManager.instance.ConfigureAndStartSimplifiedPrompt(args);
+        }
     }
 
      public void LevelPass()

@@ -11,7 +11,7 @@ public class VideoManager : MonoBehaviour
     public static VideoManager Instance { get; private set; }
 
     [Header("核心组件")]
-    [SerializeField] private VideoPlayer videoPlayer; // 拖入场景中的 VideoPlayer 组件
+    [SerializeField] public VideoPlayer videoPlayer; // 拖入场景中的 VideoPlayer 组件
     [SerializeField] private RawImage videoDisplayImage; // 用于在 UI 上显示视频的 RawImage 组件
     [SerializeField] private RenderTexture videoRenderTexture; // 视频的渲染目标
 
