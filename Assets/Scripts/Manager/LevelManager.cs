@@ -38,6 +38,9 @@ public class LevelManager : MonoBehaviour
     public GameObject coffeeDoor;
     public GameObject fakeCoffeeDoor;
 
+    public GameObject coffeeLight;
+    public GameObject beachLight;
+
     public RuntimeAnimatorController animatorController;
 
     public Transform level2Point;
@@ -66,6 +69,8 @@ public class LevelManager : MonoBehaviour
         coffeeDoor.SetActive(false);
         fakeCoffeeDoor.SetActive(false);
         type =LevelType.Coffee;
+
+        LightAdjust(true);
     }
 
     private void Update()
@@ -117,6 +122,8 @@ public class LevelManager : MonoBehaviour
         persons.SetActive(true);
         parrot.SetActive(true);
 
+        LightAdjust(false);
+
         player.transform.position = level2Point.position;
         MainCamara.Instance.SetPosition(player.transform.position);
         type = LevelType.Beach;
@@ -162,5 +169,19 @@ public class LevelManager : MonoBehaviour
      {
         VideoManager.Instance.PlayVideoClip(VideoManager.Instance.end,null);
      }
+
+    public void LightAdjust(bool isCoffee)
+    {
+        if (isCoffee)
+        {
+            coffeeLight.SetActive(true);
+            beachLight.SetActive(false);
+        }
+        else
+        {
+            coffeeLight.SetActive(false);
+            beachLight.SetActive(true);
+        }
+    }
 
 }
