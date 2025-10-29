@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -39,6 +40,8 @@ public class LevelManager : MonoBehaviour
     public GameObject parrot;
     public GameObject coffeeDoor;
     public GameObject fakeCoffeeDoor;
+
+    public AnimatorController animatorController;
 
     public Transform level2Point;
 
@@ -142,6 +145,11 @@ public class LevelManager : MonoBehaviour
           );
         lightTower.SetActive(true);
         type = LevelType.Three;
+
+        if (animatorController != null)
+        {
+            player.GetComponent<Animator>().runtimeAnimatorController = animatorController;
+        }
 
         if (VideoManager.Instance != null && VideoManager.Instance.gameObject.activeSelf)
         {

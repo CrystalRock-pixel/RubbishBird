@@ -609,4 +609,5 @@ public class TutorialManager : MonoBehaviour
     // 为了简化和满足您“跟原来的流程一样，激活tabMenuPanel”的要求，我们依赖 Update 即可。
 
     // 原始的 StartPrompt (完整流程) 保持不变，但为了简洁已删除。
+
 }
