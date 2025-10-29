@@ -14,7 +14,7 @@ public class Sea : MonoBehaviour, IInteractive
             //DialogManager.Instance.ShowDialog("从水下第一个生命的萌芽开始...", transform.position, new Vector3(0, 2, 0), this.transform);
             Transform inteTransform = interactive.instance;
             inteTransform.name = "FirstWater";
-            //inteTransform.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Item/Water/FirstWater");
+            inteTransform.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Environment/Coffee/SeaCup");
             return false;
         }
         else

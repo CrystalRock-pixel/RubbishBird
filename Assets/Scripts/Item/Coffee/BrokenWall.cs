@@ -8,6 +8,9 @@ public class BrokenWall : MonoBehaviour, IInteractive
     public bool Disposable { get => true; set => throw new System.NotImplementedException(); }
     private Player player;
 
+    public Sprite brokenSprite;
+    private BoxCollider boxCollider;
+
     public Vector3 dialogOffset = new Vector3(4, 2.5f, 0);
     public bool Interact()
     {
@@ -35,7 +38,7 @@ public class BrokenWall : MonoBehaviour, IInteractive
         else
         {
             //Debug.Log("这是一堵看起来很坚固的墙");
-            DialogManager.Instance.ShowDialog("这面墙快破了", transform.position, dialogOffset, this.transform);
+            DialogManager.Instance.ShowDialog("这扇窗看样子可以打破了  \n 但用你脆弱的鸟头可不是好主意", transform.position, dialogOffset, this.transform);
             return false;
         }
     }
@@ -43,7 +46,10 @@ public class BrokenWall : MonoBehaviour, IInteractive
     IEnumerator BreakWall()
     {
         yield return new WaitForSeconds(5f);
-        Destroy(this.gameObject);
+        boxCollider = transform.GetChild(0).GetComponent<BoxCollider>();
+        GetComponent<SpriteRenderer>().sprite = brokenSprite;
+        boxCollider.enabled = false;
+        //Destroy(this.gameObject);
     }
 
     public void InteractEnd()
