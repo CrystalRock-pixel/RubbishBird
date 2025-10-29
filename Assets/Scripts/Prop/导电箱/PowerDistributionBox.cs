@@ -26,6 +26,9 @@ public class PowerDistributionBox : MonoBehaviour
 
     public WrenchSwitch wrenchSwitch;
 
+    public GameObject cover_Open;
+    public GameObject cover_Close;
+
 
     private bool hasStartedAudioSequence = false;
 
@@ -92,6 +95,11 @@ public class PowerDistributionBox : MonoBehaviour
         if (isConnected && !isFixed)
         {
             DialogManager.Instance.ShowDialog("配电箱已修复，电路恢复连通。", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+            Open(false);
+        }
+        else
+        {
+            Open(true);
         }
         isFixed = isConnected;
 
@@ -147,5 +155,20 @@ public class PowerDistributionBox : MonoBehaviour
 
       
         hasStartedAudioSequence = false;
+    }
+
+    private void Open(bool isOpen)
+    {
+        if (cover_Close == null || cover_Open == null) return;
+        if (isOpen)
+        {
+            cover_Open.SetActive(true);
+            cover_Close.SetActive(false);
+        }
+        else
+        {
+            cover_Open.SetActive(false);
+            cover_Close.SetActive(true);
+        }
     }
 }

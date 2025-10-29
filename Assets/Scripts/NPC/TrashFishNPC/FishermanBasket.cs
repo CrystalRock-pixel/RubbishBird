@@ -112,11 +112,16 @@ public class FishermanBasket : MonoBehaviour,IInteractive
             DialogManager.Instance.ShowDialog("嘴里叼着东西 \n 鸟嘴装不下啦", transform.position, new Vector3(0, 2.5f, 0), this.transform);
             return false;
         }
-        else
+        else if(fishermanNPC.attachedChild.transform.parent == null)
         {
             DialogManager.Instance.ShowDialog("什么叫鱼篓自己开始往外面喷鱼了", transform.position, new Vector3(0, 2.5f, 0), this.transform);
             beInteract = true;
             return true;
+        }
+        else
+        {
+            DialogManager.Instance.ShowDialog("一个鱼篓 里面没有虎纹鲨鱼", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+            return false;
         }
     }
 
