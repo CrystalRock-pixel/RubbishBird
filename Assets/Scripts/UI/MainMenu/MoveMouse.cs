@@ -1,13 +1,13 @@
-
 using UnityEngine;
-
 public class MoveMouse : MonoBehaviour
 {
     public RectTransform gameName;
     public RectTransform character;
-
     [Range(0f, 1f)]
     public float moveAmount = 0.05f;
+    [Range(0f, 1f)]
+    public float characterMoveLimit = 0.3f;  
+
     private Vector2 screenCenter;
     private Vector2 gameNameStart;
     private Vector2 characterStart;
@@ -25,10 +25,19 @@ public class MoveMouse : MonoBehaviour
         Vector2 offset = (mousePos - screenCenter) / screenCenter;
         offset *= moveAmount * Screen.width;
 
-        Vector2 targetGameName = gameNameStart + offset;
-        Vector2 targetCharacter = characterStart + offset * 1.2f;
 
+        Vector2 targetGameName = gameNameStart + offset;
         gameName.anchoredPosition = Vector2.Lerp(gameName.anchoredPosition, targetGameName, 5f * Time.deltaTime);
+
+    
+        Vector2 limitedOffset = offset * 1.2f;
+        // 限制最大移动距离
+        if (limitedOffset.magnitude > characterMoveLimit * Screen.width * moveAmount)
+        {
+            limitedOffset = limitedOffset.normalized * characterMoveLimit * Screen.width * moveAmount;
+        }
+
+        Vector2 targetCharacter = characterStart + limitedOffset;
         character.anchoredPosition = Vector2.Lerp(character.anchoredPosition, targetCharacter, 5f * Time.deltaTime);
     }
 }

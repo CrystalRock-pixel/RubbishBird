@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cbae044f331324e438335f3bf82252e7
+guid: 21f9cdcfc38e5814382604298fc53003
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -95,32 +95,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: Background Chip_0
-      rect:
-        serializedVersion: 2
-        x: 1092
-        y: 163
-        width: 727
-        height: 582
-      alignment: 9
-      pivot: {x: 0.5114477, y: 0.49523306}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -347.5, y: -281}
-        - {x: -297.5, y: 266}
-        - {x: 363.5, y: 291}
-        - {x: 363.5, y: -291}
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3dcf2fa458c02634ab3d7327200a48e4
-      internalID: 1495127282
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -131,8 +106,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Background Chip_0: 1495127282
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
