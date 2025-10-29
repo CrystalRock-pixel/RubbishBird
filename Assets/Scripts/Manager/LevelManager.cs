@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -41,7 +38,7 @@ public class LevelManager : MonoBehaviour
     public GameObject coffeeDoor;
     public GameObject fakeCoffeeDoor;
 
-    public AnimatorController animatorController;
+    public RuntimeAnimatorController animatorController;
 
     public Transform level2Point;
 
