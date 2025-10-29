@@ -9,7 +9,7 @@ public class Sea : MonoBehaviour, IInteractive
     public bool Interact()
     {
         IInteractive interactive = Player.Instance.GetCurrentInteractiveItem();
-        if (interactive != null && interactive.instance.name .Contains("SeaCup"))
+        if (interactive != null && interactive.instance.name .Contains("Cup"))
         {
             //DialogManager.Instance.ShowDialog("从水下第一个生命的萌芽开始...", transform.position, new Vector3(0, 2, 0), this.transform);
             Transform inteTransform = interactive.instance;

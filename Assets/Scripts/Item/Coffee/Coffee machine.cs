@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Coffeemachine : MonoBehaviour, IInteractive
 {
-    public bool inLLevell3 = false;
+    public bool inLevell3 = false;
     private bool inSynthesis = false;
     public Transform instance { get => this.transform; set => throw new System.NotImplementedException(); }
     public bool Disposable { get; set; } = true;
@@ -21,7 +21,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
         {
             IInteractive interacitveItem = player.GetCurrentInteractiveItem();
             string interactiveItemName = interacitveItem.instance.name;
-            if (interactiveItemName == "CoffeeBean")
+            if (interactiveItemName == "CoffeeBean"&&LevelManager.instance.type!=LevelManager.LevelType.Three)
             {
                 player.OverInteractive();
                 //Debug.Log("制作咖啡中...");
@@ -30,7 +30,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
                 StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/CoffeeCup")));
                 return true;
             }
-            else if (interactiveItemName == "BadCoffeeBean")
+            else if (interactiveItemName == "BadCoffeeBean" && LevelManager.instance.type != LevelManager.LevelType.Three)
             {
                 player.OverInteractive();
                 //Debug.Log("制作咖啡中...");
@@ -65,7 +65,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
                 DialogManager.Instance.ShowDialog("需要起源之豆和源初之水", transform.position, new Vector3(0, 2.5f, 0), this.transform);
                 return false;
             }
-            else if (interactiveItemName.Contains("FirstCoffeeBean"))
+            else if (interactiveItemName.Contains("CoffeeBean") && LevelManager.instance.type == LevelManager.LevelType.Three)
             {
                 DialogManager.Instance.ShowDialog("已收集起源之豆", transform.position, new Vector3(0, 2.5f, 0), this.transform);
                 inSynthesis = true;

@@ -279,7 +279,7 @@ public class CoffeeNPC : MonoBehaviour
 
     // ---------------------- 可视化 Gizmos ----------------------
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         // 1. 绘制巡逻路径 (功能：路径可视化)
         DrawPatrolPathGizmo();
