@@ -21,6 +21,8 @@ public class VideoManager : MonoBehaviour
     public VideoClip end;
     private VideoClip currentClip;
 
+    public AudioSource audioSource;
+
     // 新增：播放完毕并保持画面的事件，用于通知 UI 显示按钮
     public event Action OnVideoHeld;
     // 播放结束并恢复游戏时间的事件
@@ -154,6 +156,7 @@ public class VideoManager : MonoBehaviour
     /// </summary>
     public void ContinueGameFromCutscene()
     {
+        Debug.Log("按按钮了");
         // 隐藏画面
         if (videoDisplayImage != null)
         {
@@ -176,6 +179,7 @@ public class VideoManager : MonoBehaviour
         }
         this.pendingArgs = null;
 
+        audioSource.Play();
 
         //if (currentClip == start)
         //{
