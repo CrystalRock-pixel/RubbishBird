@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5c2d606d46878484dadcde3334ef7fde
+guid: c9b0025d8dbd3e04dbe23b3105198b38
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Eye_0
+      name: Start__0
       rect:
         serializedVersion: 2
-        x: 116
-        y: 226
-        width: 262
-        height: 89
+        x: 1322
+        y: 268
+        width: 244
+        height: 475
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,8 +111,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5fa36612aac551f49a00e03bb4a6570d
-      internalID: 903902837
+      spriteID: d0a5cea5db6b6584d9e6764710ebf536
+      internalID: 1437563844
       vertices: []
       indices: 
       edges: []
@@ -120,7 +120,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 21fa6d6d776cc444c8405753daf8cd26
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -128,7 +128,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Eye_0: 903902837
+      Start__0: 1437563844
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
