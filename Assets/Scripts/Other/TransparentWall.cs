@@ -91,16 +91,28 @@ public class TransparentWall : MonoBehaviour
     void Update()
     {
         float target = isOccluded ? targetAlpha : opaqueAlpha;
+        float alphaDifference = Mathf.Abs(currentAlpha - target);
 
-        if (Mathf.Abs(currentAlpha - target) > 0.001f)
+        if (alphaDifference > 0.001f)
         {
-            if (isOccluded&&!isTransparent)
+            if (isOccluded && !isTransparent)
             {
+                // 切换到 Transparent 模式
                 SetMaterialTransparent();
             }
+
             // 平滑过渡 Alpha 值
             float newAlpha = Mathf.MoveTowards(currentAlpha, target, fadeSpeed * Time.deltaTime);
             SetMaterialAlpha(newAlpha);
+        }
+        else // Alpha 值已达目标
+        {
+            if (!isOccluded && isTransparent)
+            {
+                // 过渡完成后，切换回 Opaque 模式
+                SetMaterialAlpha(opaqueAlpha);
+                SetMaterialOpaque();
+            }
         }
     }
 
@@ -116,31 +128,45 @@ public class TransparentWall : MonoBehaviour
     public void SetMaterialTransparent()
     {
         isTransparent = true;
+
+        // URP/HDRP 核心切换
+        objMaterial.SetFloat(SURFACE_PROP, 1f); // _Surface = 1 (Transparent)
         objMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+
+        // 强制渲染设置 (重要!)
         objMaterial.SetOverrideTag("RenderType", "Transparent");
-        // 2. 设置 Blending Mode (例如 Alpha = 0)
-        objMaterial.SetFloat("_BlendMode", 0f);
-        objMaterial.SetFloat(SURFACE_PROP, 1f);
+        objMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        objMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        objMaterial.SetInt("_ZWrite", 0); // 关闭深度写入
+        objMaterial.renderQueue = 3000; // 切换到透明队列
 
-        Shader shader = objMaterial.shader;
-
-        // 强制重新分配Shader，有时可以触发Shader的内部刷新
-        objMaterial.shader = null;
-        objMaterial.shader = shader;
+        // URP 混合模式属性（如果存在）
+        if (objMaterial.HasProperty("_BlendMode"))
+        {
+            // 0 = Alpha (URP Lit Shader的Blend Mode)
+            objMaterial.SetFloat("_BlendMode", 0f);
+        }
     }
     public void SetMaterialOpaque()
     {
         isTransparent = false;
+
+        // URP/HDRP 核心切换
+        objMaterial.SetFloat(SURFACE_PROP, 0f); // _Surface = 0 (Opaque)
         objMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+
+        // 强制渲染设置 (重要!)
         objMaterial.SetOverrideTag("RenderType", "Opaque");
-        // 2. 设置 Blending Mode (例如 Alpha = 1)
-        objMaterial.SetFloat("_BlendMode", 1f);
-        objMaterial.SetFloat(SURFACE_PROP, 0f);
+        objMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One); // 禁用混合
+        objMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero); // 禁用混合
+        objMaterial.SetInt("_ZWrite", 1); // 开启深度写入
+        objMaterial.renderQueue = -1; // 或 2000，-1 表示使用 Shader 默认队列 (通常是 2000)
 
-        Shader shader = objMaterial.shader;
-
-        // 强制重新分配Shader，有时可以触发Shader的内部刷新
-        objMaterial.shader = null;
-        objMaterial.shader = shader;
+        // URP 混合模式属性（如果存在）
+        if (objMaterial.HasProperty("_BlendMode"))
+        {
+            // 1 = Opaque (URP Lit Shader的Blend Mode)
+            objMaterial.SetFloat("_BlendMode", 1f);
+        }
     }
 }

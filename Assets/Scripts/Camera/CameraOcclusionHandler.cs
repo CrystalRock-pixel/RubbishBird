@@ -45,25 +45,24 @@ public class CameraOcclusionHandler : MonoBehaviour
 
         // 2. 处理透明化状态更新
 
-        // 2.1. 使新被阻挡的物体透明化
+        // 2.1. 使新被阻挡的物体透明化 (只调用 SetOcclusion(true))
         foreach (var obj in objectsToOcclude)
         {
             if (currentlyOccludedObjects.Add(obj)) // 如果是新加入的物体
             {
-                obj.SetMaterialTransparent();
-                obj.SetOcclusion(true);
+                // 移除 obj.SetMaterialTransparent();
+                obj.SetOcclusion(true); // 让 TransparentWall 自己处理模式切换
             }
         }
 
-        // 2.2. 使不再被阻挡的物体恢复不透明
-        // 使用 List 临时存储需要移除的元素
+        // 2.2. 使不再被阻挡的物体恢复不透明 (只调用 SetOcclusion(false))
         List<TransparentWall> objectsToRemove = new List<TransparentWall>();
         foreach (var obj in currentlyOccludedObjects)
         {
             if (!objectsToOcclude.Contains(obj))
             {
-                obj.SetOcclusion(false);
-                obj.SetMaterialOpaque();
+                obj.SetOcclusion(false); // 让 TransparentWall 自己处理模式切换
+                                         // 移除 obj.SetMaterialOpaque();
                 objectsToRemove.Add(obj);
             }
         }

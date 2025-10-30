@@ -54,7 +54,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
             }
             else if (inSynthesis)
             {
-                if (interactiveItemName.Contains("FirstWater") || interactiveItemName.Contains("FirstCoffeeBean"))
+                if (interactiveItemName.Contains("FirstWater") || interactiveItemName.Contains("CoffeeBean"))
                 {
                     DialogManager.Instance.ShowDialog("正在合成中...", transform.position, new Vector3(0, 2.5f, 0), this.transform);
                     Destroy(interacitveItem.instance.gameObject);

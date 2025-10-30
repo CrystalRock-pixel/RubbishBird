@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using UnityEngine.SceneManagement;
 
 public class VideoManager : MonoBehaviour
 {
@@ -156,6 +157,12 @@ public class VideoManager : MonoBehaviour
     /// </summary>
     public void ContinueGameFromCutscene()
     {
+        if (currentClip == end)
+        {
+            SceneManager.LoadScene(0);
+            return;
+        }
+
         Debug.Log("按按钮了");
         // 隐藏画面
         if (videoDisplayImage != null)
