@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
@@ -241,5 +242,24 @@ public class SettingsManager : MonoBehaviour
         // 保存全屏状态 (true 存 1, false 存 0)
         PlayerPrefs.SetInt(FULLSCREEN_KEY, isFullscreen ? 1 : 0);
         PlayerPrefs.Save();
+    }
+
+
+
+    public void ReturnToMainMenu()
+    {
+        Time.timeScale = 1f; // 防止从暂停状态切回菜单依然暂停
+        SceneManager.LoadScene("MainMenu");  // 场景名务必一致
+    }
+
+    public void QuitGame()
+    {
+        Time.timeScale = 1f;
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }
