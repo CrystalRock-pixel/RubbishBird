@@ -21,7 +21,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
         {
             IInteractive interacitveItem = player.GetCurrentInteractiveItem();
             string interactiveItemName = interacitveItem.instance.name;
-            if (interactiveItemName == "CoffeeBean"&&LevelManager.instance.type!=LevelManager.LevelType.Three)
+            if (interactiveItemName .Contains("CoffeeBean")&&LevelManager.instance.type!=LevelManager.LevelType.Three)
             {
                 player.OverInteractive();
                 //Debug.Log("制作咖啡中...");
@@ -30,7 +30,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
                 StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/CoffeeCup")));
                 return true;
             }
-            else if (interactiveItemName == "BadCoffeeBean" && LevelManager.instance.type != LevelManager.LevelType.Three)
+            else if (interactiveItemName .Contains("BadCoffeeBean") && LevelManager.instance.type != LevelManager.LevelType.Three)
             {
                 player.OverInteractive();
                 //Debug.Log("制作咖啡中...");
@@ -39,7 +39,7 @@ public class Coffeemachine : MonoBehaviour, IInteractive
                 StartCoroutine(MakeThing(Resources.Load<GameObject>("Prefabs/Item/BadCoffeeCup")));
                 return true;
             }
-            else if (interactiveItemName == "CelesteStrawberry")
+            else if (interactiveItemName .Contains("CelesteStrawberry"))
             {
                 //Debug.Log("正宗塞莱斯特草莓应该集齐202颗，并用于制作草莓派");
                 DialogManager.Instance.ShowDialog("正宗塞莱斯特草莓应该集齐202颗  并用于制作草莓派", transform.position, new Vector3(0, 2.5f, 0), this.transform);
