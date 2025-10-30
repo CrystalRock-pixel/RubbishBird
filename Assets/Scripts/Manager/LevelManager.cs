@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -40,6 +41,9 @@ public class LevelManager : MonoBehaviour
 
     public GameObject coffeeLight;
     public GameObject beachLight;
+    public GameObject threeLight;
+
+    public GameObject shadowObject;
 
     public RuntimeAnimatorController animatorController;
 
@@ -148,6 +152,11 @@ public class LevelManager : MonoBehaviour
               "Ä¿±ê:  ÀûÓÃ¸ÕÄÃµ½µÄ½Å£¬·µ»Ø¿§·È¹ÝÐÞ¸´bug \n ×ó¼ü:  ×Ä \n ÓÒ¼ü:  Ãù½Ð \n E¼ü:  °ÎÒ»¸ùÓðÃ«"
           );
         lightTower.SetActive(true);
+        persons.SetActive(false);
+        shadowObject.SetActive(true);
+        fakeCoffeeLab.transform.localPosition = new Vector3(-45.51f, 15.2f, 23.16f);
+
+
         type = LevelType.Three;
 
         if (animatorController != null)
@@ -176,11 +185,19 @@ public class LevelManager : MonoBehaviour
         {
             coffeeLight.SetActive(true);
             beachLight.SetActive(false);
+            threeLight.SetActive(false);
         }
         else
         {
             coffeeLight.SetActive(false);
-            beachLight.SetActive(true);
+            if (type == LevelType.Beach)
+            {
+                beachLight.SetActive(true);
+            }
+            else
+            {
+                threeLight.SetActive(true);
+            }
         }
     }
 

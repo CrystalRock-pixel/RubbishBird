@@ -89,8 +89,16 @@ public class Coffeemachine : MonoBehaviour, IInteractive
         else
         {
             //Debug.Log("这是一个咖啡机，我想你知道它是用来干嘛的");
-            DialogManager.Instance.ShowDialog("这是一个咖啡机  你知道它是用来干嘛的", transform.position, new Vector3(0, 2.5f, 0), this.transform);
-            return false;
+            if (LevelManager.instance.type == LevelManager.LevelType.Three)
+            {
+                DialogManager.Instance.ShowDialog("// System Kernel Stabilizer Recipe\r\n// Requires:\r\n// 1. 生命能量的起源\r\n// 2. 生命希望的起点\r\n// Combine to generate: patch_v3.0.exe", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                return false;
+            }
+            else
+            {
+                DialogManager.Instance.ShowDialog("这是一个咖啡机  你知道它是用来干嘛的", transform.position, new Vector3(0, 2.5f, 0), this.transform);
+                return false;
+            }
         }
     }
     IEnumerator MakeThing(GameObject prefab)
