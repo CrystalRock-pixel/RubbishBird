@@ -20,6 +20,7 @@ public class CoffeeDoor : MonoBehaviour
         {
             player.SetPosition(level2Point.position);
             MainCamara.Instance.SetPosition(level2Point.position);
+            LevelManager.instance.LightAdjust(false);
         }
     }
 }

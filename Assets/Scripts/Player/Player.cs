@@ -349,6 +349,12 @@ public class Player : MonoBehaviour
         transform.position = position;
     }
 
+    public void SetMoveSpeedScale(float scale)
+    {
+
+        moveSpeed = oriMoveSpeed * scale;
+    }
+
     // 可视化范围（仅在编辑器中）
     private void OnDrawGizmosSelected()
     {
