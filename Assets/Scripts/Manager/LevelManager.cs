@@ -30,22 +30,26 @@ public class LevelManager : MonoBehaviour
     private Player player;
     public LevelType type;
 
+    [Header("场景变换工具")]
     public GameObject trueCoffeeLab;
     public GameObject fakeCoffeeLab;
-
     public GameObject lightTower;
     public GameObject persons;
     public GameObject parrot;
     public GameObject coffeeDoor;
     public GameObject fakeCoffeeDoor;
-
     public GameObject coffeeLight;
     public GameObject beachLight;
     public GameObject threeLight;
-
     public GameObject shadowObject;
-
     public GameObject seaTrigger;
+
+    [Header("背景音乐")]
+    private AudioSource audioSource;
+    public AudioClip coffeeBGM;
+    public AudioClip beachBGM;
+
+    private bool inCoffee;
 
     public RuntimeAnimatorController animatorController;
 
@@ -65,6 +69,7 @@ public class LevelManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        audioSource = GetComponent<AudioSource>();
     }
     private void Start()
     {
@@ -75,16 +80,23 @@ public class LevelManager : MonoBehaviour
         coffeeDoor.SetActive(false);
         fakeCoffeeDoor.SetActive(false);
         seaTrigger.SetActive(false);
-        type =LevelType.Coffee;
+        type = LevelType.Coffee;
 
-        LightAdjust(true);
+        //LightAdjust(true);
+        coffeeLight.SetActive(true);
+        beachLight.SetActive(false);
+        threeLight.SetActive(false);
+        inCoffee = true;
+
+        VideoManager.Instance.OnVideoFinished += PlayMusic;
+
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            if (VideoManager.Instance!=null&&VideoManager.Instance.videoPlayer.isPlaying)
+            if (VideoManager.Instance != null && VideoManager.Instance.videoPlayer.isPlaying)
             {
                 VideoManager.Instance.StopVideo();
                 return;
@@ -93,7 +105,7 @@ public class LevelManager : MonoBehaviour
             if (index == 1)
             {
                 GotoLevelTwo();
-                
+
             }
             else if (index == 2)
             {
@@ -109,7 +121,7 @@ public class LevelManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player")&&type==LevelType.Coffee)
+        if (other.CompareTag("Player") && type == LevelType.Coffee)
         {
             GotoLevelTwo();
         }
@@ -135,6 +147,7 @@ public class LevelManager : MonoBehaviour
 
         coffeeDoor.SetActive(true);
         fakeCoffeeDoor.SetActive(true);
+        inCoffee = false;
 
         LightAdjust(false);
 
@@ -162,6 +175,7 @@ public class LevelManager : MonoBehaviour
 
 
         type = LevelType.Three;
+        inCoffee = false;
 
         LightAdjust(false);
 
@@ -180,18 +194,21 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-     public void LevelPass()
-     {
-        VideoManager.Instance.PlayVideoClip(VideoManager.Instance.end,null);
-     }
+    public void LevelPass()
+    {
+        VideoManager.Instance.PlayVideoClip(VideoManager.Instance.end, null);
+    }
 
     public void LightAdjust(bool isCoffee)
     {
+        inCoffee = isCoffee;
         if (isCoffee)
         {
             coffeeLight.SetActive(true);
             beachLight.SetActive(false);
             threeLight.SetActive(false);
+            audioSource.clip = coffeeBGM;
+            audioSource.Play();
         }
         else
         {
@@ -204,7 +221,21 @@ public class LevelManager : MonoBehaviour
             {
                 threeLight.SetActive(true);
             }
+            audioSource.clip = beachBGM;
+            audioSource.Play();
         }
     }
 
+    public void PlayMusic()
+    {
+        if (inCoffee)
+        {
+            audioSource.clip = coffeeBGM;
+        }
+        else
+        {
+            audioSource.clip = beachBGM;
+        }
+        audioSource.Play();
+    }
 }
