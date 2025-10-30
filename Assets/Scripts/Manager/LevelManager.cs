@@ -9,6 +9,7 @@ public class AnimationCompleteEventArgs : EventArgs
     // 你需要传递给UI引导流程的参数，例如：
     public string newGoalText { get; private set; }
     public string newTabMenuContent { get; private set; }
+  
 
     // 构造函数，用于在触发事件时设置参数
     public AnimationCompleteEventArgs(string _newGoalText, string _newTabPrompt)
@@ -21,6 +22,7 @@ public class AnimationCompleteEventArgs : EventArgs
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
+      public Transform level3Point;
     public enum LevelType
     {
         Coffee,
@@ -43,6 +45,7 @@ public class LevelManager : MonoBehaviour
     public GameObject threeLight;
     public GameObject shadowObject;
     public GameObject seaTrigger;
+
 
     [Header("背景音乐")]
     private AudioSource audioSource;
@@ -158,38 +161,39 @@ public class LevelManager : MonoBehaviour
         }
     }
     public void GotoLevelThree()
+{
+    player.canJump = true;
+    AnimationCompleteEventArgs args = new AnimationCompleteEventArgs(
+          "按空格键跳跃",
+          "目标:  利用刚拿到的脚，返回咖啡馆修复bug \n 左键:  啄 \n 右键:  鸣叫 \n E键:  拔一根羽毛"
+      );
+    lightTower.SetActive(true);
+    persons.SetActive(false);
+    shadowObject.SetActive(true);
+    seaTrigger.SetActive(true);
+    fakeCoffeeLab.transform.localPosition = new Vector3(-47.58f, 13.22f, 25.69f);
+
+    player.transform.position=level3Point.position;
+
+    type = LevelType.Three;
+    inCoffee = false;
+
+    LightAdjust(false, false);
+
+    if (animatorController != null)
     {
-        player.canJump = true;
-        AnimationCompleteEventArgs args = new AnimationCompleteEventArgs(
-              "按空格键跳跃",
-              "目标:  利用刚拿到的脚，返回咖啡馆修复bug \n 左键:  啄 \n 右键:  鸣叫 \n E键:  拔一根羽毛"
-          );
-        lightTower.SetActive(true);
-        persons.SetActive(false);
-        shadowObject.SetActive(true);
-        seaTrigger.SetActive(true);
-        fakeCoffeeLab.transform.localPosition = new Vector3(-47.58f, 13.22f, 25.69f);
-
-
-        type = LevelType.Three;
-        inCoffee = false;
-
-        LightAdjust(false, false);
-
-        if (animatorController != null)
-        {
-            player.GetComponent<Animator>().runtimeAnimatorController = animatorController;
-        }
-
-        if (VideoManager.Instance != null && VideoManager.Instance.gameObject.activeSelf)
-        {
-            VideoManager.Instance.PlayVideoClip(VideoManager.Instance.findFeet, args);
-        }
-        else
-        {
-            TutorialManager.instance.ConfigureAndStartSimplifiedPrompt(args);
-        }
+        player.GetComponent<Animator>().runtimeAnimatorController = animatorController;
     }
+
+    if (VideoManager.Instance != null && VideoManager.Instance.gameObject.activeSelf)
+    {
+        VideoManager.Instance.PlayVideoClip(VideoManager.Instance.findFeet, args);
+    }
+    else
+    {
+        TutorialManager.instance.ConfigureAndStartSimplifiedPrompt(args);
+    }
+}
 
     public void LevelPass()
     {
