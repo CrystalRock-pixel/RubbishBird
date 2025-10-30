@@ -92,14 +92,17 @@ public class PowerDistributionBox : MonoBehaviour
 
         bool isConnected = connectionManager.CheckConnectivity();
 
-        if (isConnected && !isFixed)
+        if (isFixed)
         {
-            DialogManager.Instance.ShowDialog("配电箱已修复，电路恢复连通。", transform.position, new Vector3(0, 2.5f, 0), this.transform);
             Open(false);
         }
-        else
+        else if (!isFixed)
         {
             Open(true);
+        }
+        else if(isConnected && !isFixed)
+        {
+            DialogManager.Instance.ShowDialog("配电箱已修复，电路恢复连通。", transform.position, new Vector3(0, 2.5f, 0), this.transform);
         }
         isFixed = isConnected;
 
@@ -160,12 +163,12 @@ public class PowerDistributionBox : MonoBehaviour
     private void Open(bool isOpen)
     {
         if (cover_Close == null || cover_Open == null) return;
-        if (isOpen)
+        if (isOpen&&!cover_Open.activeSelf)
         {
             cover_Open.SetActive(true);
             cover_Close.SetActive(false);
         }
-        else
+        else if(!isOpen && !cover_Close.activeSelf)
         {
             cover_Open.SetActive(false);
             cover_Close.SetActive(true);

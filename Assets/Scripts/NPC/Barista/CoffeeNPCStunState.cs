@@ -23,7 +23,7 @@ public class CoffeeNPCStunState : CoffeeNPCStateBase
         _stunTimer = Npc.stunDuration;
 
         // 可以在这里添加眩晕动画或视觉效果 (例如：更改 Sprite 或颜色)
-        Npc.spriteRenderer.color = Color.blue;
+        Npc.spriteRenderer.color = new Color(0.5f,0.5f,0.5f,1f);
     }
 
     public override void OnUpdate()
