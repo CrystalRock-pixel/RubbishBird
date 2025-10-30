@@ -50,7 +50,7 @@ public class PaintingHand : MonoBehaviour, IInteractive
     {
         if (LevelManager.instance.type == LevelManager.LevelType.Three)
         {
-            LevelManager.instance.GotoLevelThree();
+            LevelManager.instance.LevelPass();
         }
         IInteractive interactive = player.GetCurrentInteractiveItem();
         if (interactive == null && canInteractive)
