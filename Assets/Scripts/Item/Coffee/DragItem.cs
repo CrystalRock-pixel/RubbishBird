@@ -27,14 +27,24 @@ public class DragItem : MonoBehaviour, IInteractive
         speedScale = 1 / (mass * 2);
         isInteracting = false;
         rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
     }
     public bool Interact()
     {
-        transform.SetParent(player.transform);
-        rb.isKinematic = true;
-        isInteracting = true;
-        Debug.Log("ÍÏ×§£¡");
-        return true;
+        IInteractive interactive = player.GetCurrentInteractiveItem();
+        if (interactive != null)
+        {
+            return false;
+        }
+        else
+        {
+            transform.SetParent(player.transform);
+            rb.isKinematic = true;
+            //rb.isKinematic = false;
+            isInteracting = true;
+            Debug.Log("ÍÏ×§£¡");
+            return true;
+        }
     }
 
     void IInteractive.InteractEnd()
@@ -49,7 +59,8 @@ public class DragItem : MonoBehaviour, IInteractive
     public void Placed()
     {
         transform.SetParent(null);
-        rb.isKinematic=false;
+        //rb.isKinematic = false;
+        //rb.isKinematic = true;
         Debug.Log("ËÉ×ì£¡");
     }
 }
