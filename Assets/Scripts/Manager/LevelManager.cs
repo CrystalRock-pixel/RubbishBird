@@ -41,6 +41,7 @@ public class LevelManager : MonoBehaviour
 
     public GameObject coffeeLight;
     public GameObject beachLight;
+    public GameObject threeLight;
 
     public GameObject shadowObject;
 
@@ -184,11 +185,19 @@ public class LevelManager : MonoBehaviour
         {
             coffeeLight.SetActive(true);
             beachLight.SetActive(false);
+            threeLight.SetActive(false);
         }
         else
         {
             coffeeLight.SetActive(false);
-            beachLight.SetActive(true);
+            if (type == LevelType.Beach)
+            {
+                beachLight.SetActive(true);
+            }
+            else
+            {
+                threeLight.SetActive(true);
+            }
         }
     }
 
