@@ -44,10 +44,14 @@ public class LevelManager : MonoBehaviour
     public GameObject shadowObject;
     public GameObject seaTrigger;
 
+
+
     [Header("±≥æ∞“Ù¿÷")]
     private AudioSource audioSource;
     public AudioClip coffeeBGM;
     public AudioClip beachBGM;
+
+    public Transform level3Point;
 
     private bool inCoffee;
 
@@ -170,6 +174,7 @@ public class LevelManager : MonoBehaviour
         seaTrigger.SetActive(true);
         fakeCoffeeLab.transform.localPosition = new Vector3(-47.58f, 13.22f, 25.69f);
 
+        player.transform.position=level3Point.position;
 
         type = LevelType.Three;
         inCoffee = false;

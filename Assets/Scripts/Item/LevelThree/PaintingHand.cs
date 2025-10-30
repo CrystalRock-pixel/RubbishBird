@@ -48,6 +48,10 @@ public class PaintingHand : MonoBehaviour, IInteractive
     }
     public bool Interact()
     {
+        if (LevelManager.instance.type == LevelManager.LevelType.Three)
+        {
+            LevelManager.instance.GotoLevelThree();
+        }
         IInteractive interactive = player.GetCurrentInteractiveItem();
         if (interactive == null && canInteractive)
         {
