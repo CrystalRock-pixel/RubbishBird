@@ -18,7 +18,7 @@ public class GotoCoffeeLab : MonoBehaviour
             Player.Instance.SetPosition(coffeeLabPoint.position);
             MainCamara.Instance.SetPosition(coffeeLabPoint.position);
 
-            LevelManager.instance.LightAdjust(true);
+            LevelManager.instance.LightAdjust(true,true);
         }
     }
 }

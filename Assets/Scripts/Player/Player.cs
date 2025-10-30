@@ -44,6 +44,10 @@ public class Player : MonoBehaviour
     public PlayerJumpState jumpState;
     public PlayerFeatherState featherState;
 
+    [Header("音效参数")]
+    public AudioClip chirpAudioClip;
+    public AudioClip jumpAudioClip;
+
     //能力标志
     public bool canJump;
     public bool canFeather;
@@ -279,6 +283,7 @@ public class Player : MonoBehaviour
     }
     public void Chirp()
     {
+        audioSource.clip=chirpAudioClip;
         audioSource.Play();
         StartBoolAnimation("IsChirp", 0.5f);
 

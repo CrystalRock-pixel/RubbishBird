@@ -82,10 +82,7 @@ public class LevelManager : MonoBehaviour
         seaTrigger.SetActive(false);
         type = LevelType.Coffee;
 
-        //LightAdjust(true);
-        coffeeLight.SetActive(true);
-        beachLight.SetActive(false);
-        threeLight.SetActive(false);
+        LightAdjust(true,false);
         inCoffee = true;
 
         VideoManager.Instance.OnVideoFinished += PlayMusic;
@@ -135,7 +132,7 @@ public class LevelManager : MonoBehaviour
             "Ä¿±ê:  ÐÞ¸´µÆËþ£¬¿ªµÆÑ°ÕÒÏßË÷ \n ×ó¼ü:  ×Ä \n ÓÒ¼ü:  Ãù½Ð \n E¼ü:  °ÎÒ»¸ùÓðÃ«"
         );
 
-        trueCoffeeLab.transform.position += new Vector3(0, 50, 0);
+        trueCoffeeLab.transform.position += new Vector3(0, 30, 0);
         //trueCoffeeLab.SetActive(false);
         fakeCoffeeLab.SetActive(true);
         persons.SetActive(true);
@@ -149,7 +146,7 @@ public class LevelManager : MonoBehaviour
         fakeCoffeeDoor.SetActive(true);
         inCoffee = false;
 
-        LightAdjust(false);
+        LightAdjust(false,false);
 
         if (VideoManager.Instance != null && VideoManager.Instance.gameObject.activeSelf)
         {
@@ -171,13 +168,13 @@ public class LevelManager : MonoBehaviour
         persons.SetActive(false);
         shadowObject.SetActive(true);
         seaTrigger.SetActive(true);
-        fakeCoffeeLab.transform.localPosition = new Vector3(-45.51f, 15.2f, 23.16f);
+        fakeCoffeeLab.transform.localPosition = new Vector3(-47.58f, 13.22f, 25.69f);
 
 
         type = LevelType.Three;
         inCoffee = false;
 
-        LightAdjust(false);
+        LightAdjust(false, false);
 
         if (animatorController != null)
         {
@@ -199,20 +196,24 @@ public class LevelManager : MonoBehaviour
         VideoManager.Instance.PlayVideoClip(VideoManager.Instance.end, null);
     }
 
-    public void LightAdjust(bool isCoffee)
+    public void LightAdjust(bool isCoffee,bool adjustMusic)
     {
+        audioSource.Stop();
         inCoffee = isCoffee;
+        coffeeLight.SetActive(false);
+        beachLight.SetActive(false);
+        threeLight.SetActive(false);
         if (isCoffee)
         {
             coffeeLight.SetActive(true);
-            beachLight.SetActive(false);
-            threeLight.SetActive(false);
-            audioSource.clip = coffeeBGM;
-            audioSource.Play();
+            if (adjustMusic)
+            {
+                audioSource.clip = coffeeBGM;
+                audioSource.Play();
+            }
         }
         else
         {
-            coffeeLight.SetActive(false);
             if (type == LevelType.Beach)
             {
                 beachLight.SetActive(true);
@@ -221,8 +222,11 @@ public class LevelManager : MonoBehaviour
             {
                 threeLight.SetActive(true);
             }
-            audioSource.clip = beachBGM;
-            audioSource.Play();
+            if (adjustMusic)
+            {
+                audioSource.clip = beachBGM;
+                audioSource.Play();
+            }
         }
     }
 

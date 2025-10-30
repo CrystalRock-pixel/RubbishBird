@@ -16,6 +16,7 @@ public class PlayerJumpState : PlayerStateBase
         base.OnEnter();
         rb.velocity = new Vector3(rb.velocity.x, player.jumpForce, rb.velocity.z);
         animator.SetBool("IsJumping",true);
+        audioSource.clip = player.jumpAudioClip;
         audioSource.Play();
     }
 
